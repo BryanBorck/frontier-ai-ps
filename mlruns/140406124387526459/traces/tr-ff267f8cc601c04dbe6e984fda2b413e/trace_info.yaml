@@ -1,0 +1,10 @@
+execution_duration_ms: 2554
+request_preview: '{"question": "\u001b[Aq"}'
+request_time: '2025-11-22T01:32:43.256Z'
+response_preview: ''
+state: OK
+trace_id: tr-ff267f8cc601c04dbe6e984fda2b413e
+trace_location:
+  mlflow_experiment:
+    experiment_id: '140406124387526459'
+  type: MLFLOW_EXPERIMENT

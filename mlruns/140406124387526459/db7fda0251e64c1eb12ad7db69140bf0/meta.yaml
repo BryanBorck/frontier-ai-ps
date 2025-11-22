@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/bryanborck/Documents/Development/Bry/frontier-ai-ps/mlruns/140406124387526459/db7fda0251e64c1eb12ad7db69140bf0/artifacts
+end_time: 1763829480534
+entry_point_name: ''
+experiment_id: '140406124387526459'
+lifecycle_stage: active
+run_id: db7fda0251e64c1eb12ad7db69140bf0
+run_name: bold-calf-960
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1763828576122
+status: 3
+tags: []
+user_id: bryanborck

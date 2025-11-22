@@ -1,0 +1,21 @@
+execution_duration_ms: 14643
+request_preview: '{"question": "i need some itau funds"}'
+request_time: '2025-11-22T00:29:16.823Z'
+response_preview: '{"trajectory": {"thought_0": "I will parse the request to identify
+  the search criteria for Itaú funds, specifically looking for any mention of fund
+  type or investment class if present.", "tool_name_0": "parse", "tool_args_0": {"query":
+  "i need some itau funds"}, "observation_0": {"fund_legal_name": "itau", "fund_type":
+  null, "investment_class": null, "fund_of_funds": null}, "thought_1": "Now that I
+  have the search criteria for Itaú funds, I will perform a search using this criteria
+  to find relevant fund results.", "tool_name_1": "search", "tool_args_1": {"criteria":
+  {"fund_legal_name": "itau", "fund_type": null, "investment_class": null, "fund_of_funds":
+  null}, "limit": 10}, "observation_1": [{"legal_name": "STOCK MARKET ITAU FMA", "cnpj":
+  "56.089.105/0001-13", "fund_type": "FMIA", "investment_class": ""}, {"legal_name":
+  "ITAU FIA BB", "cnpj": "05.357.219/0001-66", "fund_type": "FITVM", "investment_class":
+  ""}, {"legal_name": "ITAUA FUNDO DE INVESTIMENTO FINANCEIRO MULTIMERCADO CRÉD...'
+state: OK
+trace_id: tr-5f8ac0cc75c4fde14c1bc83a4f98ecf6
+trace_location:
+  mlflow_experiment:
+    experiment_id: '140406124387526459'
+  type: MLFLOW_EXPERIMENT

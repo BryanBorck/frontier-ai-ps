@@ -1,0 +1,88 @@
+[
+  {
+    "query": "bradesco FIP multimercado",
+    "expected": {
+      "fund_legal_name": "bradesco",
+      "fund_type": "FIP",
+      "investment_class": null,
+      "fund_of_funds": null
+    },
+    "predicted": {
+      "fund_legal_name": "bradesco",
+      "fund_type": "FIP",
+      "investment_class": "Multimercado",
+      "fund_of_funds": null,
+      "target_audience": null,
+      "manager_type": null,
+      "is_exclusive_fund": null,
+      "can_invest_abroad_100_pct": null,
+      "has_long_term_taxation": null
+    },
+    "score": 1.0
+  },
+  {
+    "query": "fund of funds from btg",
+    "expected": {
+      "fund_legal_name": "btg",
+      "fund_type": null,
+      "investment_class": null,
+      "fund_of_funds": true
+    },
+    "predicted": {
+      "fund_legal_name": "btg",
+      "fund_type": null,
+      "investment_class": null,
+      "fund_of_funds": true,
+      "target_audience": null,
+      "manager_type": null,
+      "is_exclusive_fund": null,
+      "can_invest_abroad_100_pct": null,
+      "has_long_term_taxation": null
+    },
+    "score": 1.0
+  },
+  {
+    "query": "exclusive fund of bradesco",
+    "expected": {
+      "fund_legal_name": "bradesco",
+      "fund_type": null,
+      "investment_class": null,
+      "fund_of_funds": null,
+      "is_exclusive_fund": true
+    },
+    "predicted": {
+      "fund_legal_name": "bradesco",
+      "fund_type": null,
+      "investment_class": null,
+      "fund_of_funds": null,
+      "target_audience": null,
+      "manager_type": null,
+      "is_exclusive_fund": true,
+      "can_invest_abroad_100_pct": null,
+      "has_long_term_taxation": null
+    },
+    "score": 1.0
+  },
+  {
+    "query": "fund for qualified investors",
+    "expected": {
+      "fund_legal_name": null,
+      "fund_type": null,
+      "investment_class": null,
+      "fund_of_funds": null,
+      "target_audience": "QUALIFIED"
+    },
+    "predicted": {
+      "fund_legal_name": null,
+      "fund_type": null,
+      "investment_class": null,
+      "fund_of_funds": null,
+      "target_audience": "QUALIFIED",
+      "manager_type": null,
+      "is_exclusive_fund": null,
+      "can_invest_abroad_100_pct": null,
+      "has_long_term_taxation": null
+    },
+    "score": 1.0
+  }
+]

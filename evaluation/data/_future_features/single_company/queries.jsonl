@@ -1,0 +1,1 @@
+{"query": "itau ibovespa tracking funds", "expected_criteria": {"fund_legal_name": "Itaú FIC Ações Ibovespa Ativo", "lookup_field": "fund_code", "_needs_implementation": ["lookup_field"], "_status": "future_feature"}, "description": "Itau Ibovespa trackers", "category": "direct_lookup", "eval_category": "single_company", "validation_type": "contains"}

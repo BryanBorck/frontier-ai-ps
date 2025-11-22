@@ -1,0 +1,21 @@
+execution_duration_ms: 14693
+request_preview: '{"question": "hey give me some vinci funds"}'
+request_time: '2025-11-22T00:27:27.129Z'
+response_preview: '{"trajectory": {"thought_0": "I need to search for funds associated
+  with the name \"Vinci\". This requires formulating a search using the appropriate
+  tool to find the relevant fund results.", "tool_name_0": "search", "tool_args_0":
+  {"criteria": {"fund_legal_name": "Vinci"}, "limit": 10}, "observation_0": [{"legal_name":
+  "Vinci Selection Fundo De Investimento Multimercado", "cnpj": "16.569.933/0001-34",
+  "fund_type": "FI", "investment_class": "Multimercado"}, {"legal_name": "VINCI CAPITAL
+  PARTNERS II B FUNDO DE INVESTIMENTO EM PARTICIPAÇÕES MULTIESTRATÉGIA - EM LIQUIDAÇÃO",
+  "cnpj": "13.651.938/0001-13", "fund_type": "FIP", "investment_class": "FIP"}, {"legal_name":
+  "VINCI TOTAL RETURN B FIFE LONG BIASED FI FINANCEIRO - CI MULT - RESP LIMITADA",
+  "cnpj": "49.684.500/0001-89", "fund_type": "FI", "investment_class": ""}, {"legal_name":
+  "MIO VINCI OPTIMUM FUNDO DE INVESTIMENTO FINANCEIRO EM COTAS DE FUNDO DE INVESTIMENTO
+  MULTIMERCADO CP", "cnpj": "48.718.927/0001-98", "fund_type": "FI", "i...'
+state: OK
+trace_id: tr-23e6eb8da4db5c02b3b0569cbaf8d668
+trace_location:
+  mlflow_experiment:
+    experiment_id: '140406124387526459'
+  type: MLFLOW_EXPERIMENT

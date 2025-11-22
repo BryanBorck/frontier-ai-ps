@@ -1,0 +1,21 @@
+execution_duration_ms: 14250
+request_preview: '{"question": "give me bradesco funds"}'
+request_time: '2025-11-22T01:30:35.802Z'
+response_preview: '{"trajectory": {"thought_0": "I need to parse the query to structure
+  the search criteria for finding Bradesco funds.", "tool_name_0": "parse", "tool_args_0":
+  {"query": "give me bradesco funds"}, "observation_0": {"fund_legal_name": "bradesco",
+  "fund_type": null, "investment_class": null, "fund_of_funds": null, "target_audience":
+  null, "manager_type": null, "is_exclusive_fund": null, "can_invest_abroad_100_pct":
+  null, "has_long_term_taxation": null}, "thought_1": "I have parsed the query and
+  structured the search criteria for Bradesco funds. Now, I will search for the funds
+  using the extracted criteria.", "tool_name_1": "search", "tool_args_1": {"criteria":
+  {"fund_legal_name": "bradesco"}, "limit": 10}, "observation_1": [{"legal_name":
+  "BRADESCO PRIVATE PGBLVGBL FI FINANCEIRO - CIC RF - RESP LIMITADA", "cnpj": "31.008.252/0001-90",
+  "fund_type": "CLASSES - FIF", "investment_class": ""}, {"legal_name": "BRADESCO
+  MASTER PREVIDÊNCIA IBOVESPA ATIVO FI FINANCEIRO - CIA - RESP LIMITADA", "c...'
+state: OK
+trace_id: tr-a9e8f32289e33c2c91863848cfd75041
+trace_location:
+  mlflow_experiment:
+    experiment_id: '140406124387526459'
+  type: MLFLOW_EXPERIMENT

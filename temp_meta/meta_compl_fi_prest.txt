@@ -1,0 +1,40 @@
+-----------------------
+Campo: CNPJ_FUNDO
+-----------------------
+   Descrição : CNPJ do fundo
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 20
+
+-----------------------
+Campo: DS_SERV_PREST
+-----------------------
+   Descrição : Descrição do serviço prestado
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 100
+
+-----------------------
+Campo: DT_COMPTC
+-----------------------
+   Descrição : Data de competência do documento
+   Domínio   : AAAA-MM-DD
+   Tipo Dados: date
+   Tamanho   : 10
+
+-----------------------
+Campo: NM_PREST_SERV
+-----------------------
+   Descrição : Nome do prestador do serviço
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 100
+
+-----------------------
+Campo: TP_FUNDO
+-----------------------
+   Descrição : Tipo de fundo
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 15
+

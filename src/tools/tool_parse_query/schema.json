@@ -1,0 +1,61 @@
+{
+  "tool_name": "tool_parse_query",
+  "description": "Parses a user's natural language query and extracts structured fund search criteria including fund type, investment class, fund name, fund of funds flag, target audience, manager type, and other filters.",
+  "input_schema": {
+    "query": {
+      "type": "string",
+      "description": "The user's natural language query about funds, e.g., 'find FIP funds' or 'show me funds with BTG in the name' or 'exclusive fund for qualified investors'."
+    }
+  },
+  "output_schema": {
+    "fund_legal_name": {
+      "type": "string",
+      "nullable": true,
+      "description": "Legal name of the fund (only if user explicitly mentions it)."
+    },
+    "fund_type": {
+      "type": "string",
+      "nullable": true,
+      "description": "Fund type: FI, FIP, FIDC, FII, etc.",
+      "enum": ["FI", "FIP", "FIDC", "FII", "ETF", "CLASSES - FIF"]
+    },
+    "investment_class": {
+      "type": "string",
+      "nullable": true,
+      "description": "Investment class: Multimercado, Ações, Renda Fixa, Cambial, FIP, Dívida Externa, Imobiliário.",
+      "enum": ["Multimercado", "Ações", "Renda Fixa", "Cambial", "FIP", "Dívida Externa", "Imobiliário"]
+    },
+    "fund_of_funds": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Whether to filter for fund of funds (only if user explicitly specifies)."
+    },
+    "target_audience": {
+      "type": "string",
+      "nullable": true,
+      "description": "Target audience for the fund (only if user explicitly specifies).",
+      "enum": ["PROFESSIONAL", "QUALIFIED", "RETAIL"]
+    },
+    "manager_type": {
+      "type": "string",
+      "nullable": true,
+      "description": "Fund manager type (only if user explicitly specifies).",
+      "enum": ["CORPORATE", "INDIVIDUAL"]
+    },
+    "is_exclusive_fund": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Whether to filter for exclusive funds (only if user explicitly specifies)."
+    },
+    "can_invest_abroad_100_pct": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Whether fund can invest 100% abroad (only if user explicitly specifies)."
+    },
+    "has_long_term_taxation": {
+      "type": "boolean",
+      "nullable": true,
+      "description": "Whether fund has long-term taxation benefits (only if user explicitly specifies)."
+    }
+  }
+}

@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/bryanborck/Documents/Development/Bry/frontier-ai-ps/mlruns/140406124387526459/a6b5da366788442b941f557eb42dd379/artifacts
+end_time: 1763832313755
+entry_point_name: ''
+experiment_id: '140406124387526459'
+lifecycle_stage: active
+run_id: a6b5da366788442b941f557eb42dd379
+run_name: bald-foal-784
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1763828545090
+status: 3
+tags: []
+user_id: bryanborck

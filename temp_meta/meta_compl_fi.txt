@@ -1,0 +1,169 @@
+-----------------------
+Campo: AG_RISCO
+-----------------------
+   Descrição : Nome da agência de classificação de risco
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 100
+
+-----------------------
+Campo: APRES_ADMIN
+-----------------------
+   Descrição : Apresentação do administrador
+   Domínio   : Alfanumérico
+   Tipo Dados: text
+   Precisão  : 
+   Scale     : 
+
+-----------------------
+Campo: APRES_GESTOR
+-----------------------
+   Descrição : Apresentação do gestor de recursos
+   Domínio   : Alfanumérico
+   Tipo Dados: text
+   Precisão  : 
+   Scale     : 
+
+-----------------------
+Campo: CNPJ_AG_RISCO
+-----------------------
+   Descrição : CNPJ da agência de classificação de risco
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 20
+
+-----------------------
+Campo: CNPJ_FUNDO
+-----------------------
+   Descrição : CNPJ do fundo
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 20
+
+-----------------------
+Campo: DISCLAIMER_AG_RISCO
+-----------------------
+   Descrição : Padronização do disclaimer relativo à advertência sobre a manutenção do serviço de classificação de risco
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 100
+
+-----------------------
+Campo: DISTRIB_LIGADO
+-----------------------
+   Descrição : Indica se o distribuidor oferta para o público alvo do fundo, preponderantemente, fundos geridos por um único gestor ou por gestoras ligadas a um mesmo grupo econômico
+   Domínio   : S/N
+   Tipo Dados: varchar
+   Tamanho   : 1
+
+-----------------------
+Campo: DT_COMPTC
+-----------------------
+   Descrição : Data de competência do documento
+   Domínio   : AAAA-MM-DD
+   Tipo Dados: date
+   Tamanho   : 10
+
+-----------------------
+Campo: GRAU_RISCO
+-----------------------
+   Descrição : Grau de risco atribuído
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 50
+
+-----------------------
+Campo: INF_AUTORREGULACAO_ANBIMA
+-----------------------
+   Descrição : Informações sobre autorregulação ANBIMA
+   Domínio   : Alfanumérico
+   Tipo Dados: text
+   Precisão  : 
+   Scale     : 
+
+-----------------------
+Campo: OUTRO_INF
+-----------------------
+   Descrição : Demais informações relevantes
+   Domínio   : Alfanumérico
+   Tipo Dados: text
+   Precisão  : 
+   Scale     : 
+
+-----------------------
+Campo: PERIODO_MIN_DIVULG_CART
+-----------------------
+   Descrição : Periodicidade mínima para divulgação da composição da carteira do fundo
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 250
+
+-----------------------
+Campo: POLIT_ADM_RISCO
+-----------------------
+   Descrição : Política de administração de risco, em especial dos métodos utilizados pelo administrador para gerenciar os riscos a que o fundo se encontra sujeito, inclusive risco de liquidez
+   Domínio   : Alfanumérico
+   Tipo Dados: text
+   Precisão  : 
+   Scale     : 
+
+-----------------------
+Campo: POLIT_DISTRIB
+-----------------------
+   Descrição : Política de distribuição de cotas
+   Domínio   : Alfanumérico
+   Tipo Dados: text
+   Precisão  : 
+   Scale     : 
+
+-----------------------
+Campo: POLIT_VOTO
+-----------------------
+   Descrição : Política relativa ao exercício de direito do voto
+   Domínio   : Alfanumérico
+   Tipo Dados: text
+   Precisão  : 
+   Scale     : 
+
+-----------------------
+Campo: RISCO_CART
+-----------------------
+   Descrição : Exposição, em ordem de relevância, dos fatores de riscos inerentes à composição da carteira do fundo
+   Domínio   : Alfanumérico
+   Tipo Dados: text
+   Precisão  : 
+   Scale     : 
+
+-----------------------
+Campo: ST_AG_RISCO
+-----------------------
+   Descrição : Indica se existe ou não agência de classificação de rating
+   Domínio   : S/N
+   Tipo Dados: varchar
+   Tamanho   : 1
+
+-----------------------
+Campo: TP_FUNDO
+-----------------------
+   Descrição : Tipo de fundo
+   Domínio   : Alfanumérico
+   Tipo Dados: varchar
+   Tamanho   : 15
+
+-----------------------
+Campo: TRIBUT_FUNDO_COTST
+-----------------------
+   Descrição : Descrição da tributação aplicável ao fundo e a seus cotistas, contemplando a política a ser adotada pelo administrador quanto ao tratamento tributário perseguido
+   Domínio   : Alfanumérico
+   Tipo Dados: text
+   Precisão  : 
+   Scale     : 
+
+-----------------------
+Campo: VOTO_GESTOR
+-----------------------
+   Descrição : Indica se o gestor vota ou não em assembleias dos ativos que compõem a carteira
+   Domínio   : S/N
+   Tipo Dados: varchar
+   Tamanho   : 1
+

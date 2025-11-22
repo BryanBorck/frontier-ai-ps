@@ -1,0 +1,1 @@
+{"query": "fundos exclusivos para investidores qualificados", "expected_criteria": {"fund_legal_name": null, "fund_type": null, "investment_class": null, "fund_of_funds": null, "target_audience": "QUALIFIED"}, "description": "Portuguese - qualified investors only", "category": "accessibility", "eval_category": "single_accessibility", "validation_type": "criteria_match"}

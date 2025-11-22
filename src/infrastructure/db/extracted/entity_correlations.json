@@ -1,0 +1,1577 @@
+{
+  "groups": {
+    "CREDIT SUISSE": {
+      "MANAGER": [
+        {
+          "name": "CREDIT SUISSE HEDGING-GRIFFO WEALTH MANAGEMENT S.A.",
+          "tax_id": "68.328.632/0001-12",
+          "count": 891
+        },
+        {
+          "name": "CREDIT SUISSE (BRASIL) DTVM S/A",
+          "tax_id": "30.121.792/0001-13",
+          "count": 13
+        },
+        {
+          "name": "CREDIT SUISSE (BRASIL) S/A CTVM",
+          "tax_id": "42.584.318/0001-07",
+          "count": 5
+        },
+        {
+          "name": "CREDIT SUISSE CONSULTORIA DE INVESTIMENTOS LTDA",
+          "tax_id": "05.832.580/0001-05",
+          "count": 1
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "CREDIT SUISSE (BRASIL) DTVM S/A",
+          "tax_id": "30.121.792/0001-13",
+          "count": 1
+        }
+      ]
+    },
+    "BTG": {
+      "MANAGER": [
+        {
+          "name": "BTG PACTUAL WM GESTÃO DE RECURSOS LTDA",
+          "tax_id": "60.451.242/0001-23",
+          "count": 781
+        },
+        {
+          "name": "BTG PACTUAL GESTÃO E CONSULTORIA DE INVESTIMENTOS LTDA",
+          "tax_id": "12.695.840/0001-03",
+          "count": 257
+        },
+        {
+          "name": "BTG PACTUAL ASSET MANAGEMENT S/A DTVM",
+          "tax_id": "29.650.082/0001-00",
+          "count": 190
+        },
+        {
+          "name": "BTG PACTUAL GESTORA DE RECURSOS LTDA",
+          "tax_id": "09.631.542/0001-37",
+          "count": 40
+        },
+        {
+          "name": "BTG PACTUAL GESTORA DE INVESTIMENTOS ALTERNATIVOS LTDA.",
+          "tax_id": "07.625.159/0001-40",
+          "count": 30
+        },
+        {
+          "name": "BTG PACTUAL SERVIÇOS FINANCEIROS S/A DTVM",
+          "tax_id": "59.281.253/0001-23",
+          "count": 18
+        },
+        {
+          "name": "BANCO BTG PACTUAL S/A",
+          "tax_id": "30.306.294/0001-45",
+          "count": 3
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "BTG PACTUAL SERVIÇOS FINANCEIROS S/A DTVM",
+          "tax_id": "59.281.253/0001-23",
+          "count": 2653
+        },
+        {
+          "name": "BTG PACTUAL ASSET MANAGEMENT S/A DTVM",
+          "tax_id": "29.650.082/0001-00",
+          "count": 7
+        },
+        {
+          "name": "BTG PACTUAL GESTORA DE INVESTIMENTOS ALTERNATIVOS LTDA.",
+          "tax_id": "07.625.159/0001-40",
+          "count": 5
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "BANCO BTG PACTUAL S/A",
+          "tax_id": "30.306.294/0001-45",
+          "count": 2549
+        },
+        {
+          "name": "BTG PACTUAL CTVM S/A",
+          "tax_id": "43.815.158/0001-22",
+          "count": 1
+        }
+      ]
+    },
+    "SAFRA": {
+      "MANAGER": [
+        {
+          "name": "SAFRA ASSET MANAGEMENT LTDA.",
+          "tax_id": "62.180.047/0001-31",
+          "count": 647
+        },
+        {
+          "name": "SAFRA DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIÁRIOS LTDA.",
+          "tax_id": "01.638.542/0001-57",
+          "count": 59
+        },
+        {
+          "name": "BANCO SAFRA BSI S/A",
+          "tax_id": "07.002.898/0001-86",
+          "count": 42
+        },
+        {
+          "name": "SAFRA GESTÃO DE RECURSOS LTDA",
+          "tax_id": "11.120.589/0001-88",
+          "count": 38
+        },
+        {
+          "name": "SAFRA ASSET CORRETORA DE TÍTULOS E VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "65.913.436/0001-17",
+          "count": 32
+        },
+        {
+          "name": "BANCO J. SAFRA S.A.",
+          "tax_id": "03.017.677/0001-20",
+          "count": 31
+        },
+        {
+          "name": "BANCO SAFRA S/A",
+          "tax_id": "58.160.789/0001-28",
+          "count": 1
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "SAFRA SERVIÇOS DE ADMINISTRAÇÃO FIDUCIÁRIA LTDA.",
+          "tax_id": "06.947.853/0001-11",
+          "count": 755
+        },
+        {
+          "name": "SAFRA DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIÁRIOS LTDA.",
+          "tax_id": "01.638.542/0001-57",
+          "count": 57
+        },
+        {
+          "name": "BANCO SAFRA BSI S/A",
+          "tax_id": "07.002.898/0001-86",
+          "count": 17
+        },
+        {
+          "name": "SAFRA ASSET CORRETORA DE TÍTULOS E VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "65.913.436/0001-17",
+          "count": 14
+        },
+        {
+          "name": "BANCO J. SAFRA S.A.",
+          "tax_id": "03.017.677/0001-20",
+          "count": 9
+        },
+        {
+          "name": "M.SAFRA & CO. PARTICIPAÇÕES S.A.",
+          "tax_id": "03.203.507/0001-30",
+          "count": 1
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "BANCO SAFRA S/A",
+          "tax_id": "58.160.789/0001-28",
+          "count": 901
+        },
+        {
+          "name": "SAFRA ASSET CORRETORA DE TÍTULOS E VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "65.913.436/0001-17",
+          "count": 2
+        }
+      ]
+    },
+    "BRADESCO": {
+      "MANAGER": [
+        {
+          "name": "BRAM - BRADESCO ASSET MANAGEMENT S.A. DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS",
+          "tax_id": "62.375.134/0001-44",
+          "count": 595
+        },
+        {
+          "name": "BANCO BRADESCO S.A.",
+          "tax_id": "60.746.948/0001-12",
+          "count": 129
+        },
+        {
+          "name": "BRADESCO VIDA E PREVIDÊNCIA S.A.",
+          "tax_id": "51.990.695/0001-37",
+          "count": 38
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "BANCO BRADESCO S.A.",
+          "tax_id": "60.746.948/0001-12",
+          "count": 562
+        },
+        {
+          "name": "BRADESCO-KIRTON CORRETORA DE CÂMBIO S.A.",
+          "tax_id": "58.229.246/0001-10",
+          "count": 20
+        },
+        {
+          "name": "BRAM - BRADESCO ASSET MANAGEMENT S.A. DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS",
+          "tax_id": "62.375.134/0001-44",
+          "count": 13
+        },
+        {
+          "name": "BANCO BRADESCO BERJ S.A.",
+          "tax_id": "33.147.315/0001-15",
+          "count": 1
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "BANCO BRADESCO S.A.",
+          "tax_id": "60.746.948/0001-12",
+          "count": 2872
+        },
+        {
+          "name": "BRADESCO-KIRTON CORRETORA DE CÂMBIO S.A.",
+          "tax_id": "58.229.246/0001-10",
+          "count": 37
+        }
+      ]
+    },
+    "ITAU": {
+      "MANAGER": [
+        {
+          "name": "ITAU UNIBANCO S.A.",
+          "tax_id": "60.701.190/0001-04",
+          "count": 497
+        },
+        {
+          "name": "ITAU UNIBANCO ASSET MANAGEMENT LTDA.",
+          "tax_id": "40.430.971/0001-96",
+          "count": 306
+        },
+        {
+          "name": "INTRAG DTVM LTDA.",
+          "tax_id": "62.418.140/0001-31",
+          "count": 39
+        },
+        {
+          "name": "UNIBANCO ASSET MANAGEMENT S/A DTVM",
+          "tax_id": "33.829.292/0001-29",
+          "count": 14
+        },
+        {
+          "name": "ITAUBANK ASSET MANAGEMENT LTDA",
+          "tax_id": "01.177.477/0001-00",
+          "count": 8
+        },
+        {
+          "name": "BANCO ITAUCARD S.A.",
+          "tax_id": "17.192.451/0001-70",
+          "count": 7
+        },
+        {
+          "name": "ITAU CORRETORA DE VALORES SA",
+          "tax_id": "61.194.353/0001-64",
+          "count": 2
+        },
+        {
+          "name": "ITAUBANK DTVM S/A",
+          "tax_id": "62.224.134/0001-43",
+          "count": 1
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "ITAU UNIBANCO S.A.",
+          "tax_id": "60.701.190/0001-04",
+          "count": 1148
+        },
+        {
+          "name": "INTRAG DTVM LTDA.",
+          "tax_id": "62.418.140/0001-31",
+          "count": 1080
+        },
+        {
+          "name": "BANCO ITAUCARD S.A.",
+          "tax_id": "17.192.451/0001-70",
+          "count": 309
+        },
+        {
+          "name": "UNIBANCO UNIAO BANCOS BRAS SA",
+          "tax_id": "33.700.394/0001-40",
+          "count": 76
+        },
+        {
+          "name": "BANCO ITAUBANK S.A.",
+          "tax_id": "60.394.079/0001-04",
+          "count": 7
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "ITAU UNIBANCO S.A.",
+          "tax_id": "60.701.190/0001-04",
+          "count": 4035
+        },
+        {
+          "name": "UNIBANCO UNIAO BANCOS BRAS SA",
+          "tax_id": "33.700.394/0001-40",
+          "count": 80
+        },
+        {
+          "name": "BANCO ITAUBANK S.A.",
+          "tax_id": "60.394.079/0001-04",
+          "count": 6
+        }
+      ]
+    },
+    "XP": {
+      "MANAGER": [
+        {
+          "name": "XP ADVISORY GESTAO DE RECURSOS LTDA",
+          "tax_id": "15.289.957/0001-77",
+          "count": 384
+        },
+        {
+          "name": "XP ALLOCATION ASSET MANAGEMENT LTDA.",
+          "tax_id": "37.918.829/0001-88",
+          "count": 248
+        },
+        {
+          "name": "XP GESTÃO DE RECURSOS LTDA",
+          "tax_id": "07.625.200/0001-89",
+          "count": 75
+        },
+        {
+          "name": "XP VIDA E PREVIDÊNCIA S.A.",
+          "tax_id": "29.408.732/0001-05",
+          "count": 61
+        },
+        {
+          "name": "XP VISTA ASSET MANAGEMENT LTDA.",
+          "tax_id": "16.789.525/0001-98",
+          "count": 51
+        },
+        {
+          "name": "XP INVESTIMENTOS CCTVM S.A.",
+          "tax_id": "02.332.886/0001-04",
+          "count": 10
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "XP INVESTIMENTOS CCTVM S.A.",
+          "tax_id": "02.332.886/0001-04",
+          "count": 544
+        }
+      ]
+    },
+    "BB": {
+      "MANAGER": [
+        {
+          "name": "BB GESTAO DE RECURSOS DTVM S.A",
+          "tax_id": "30.822.936/0001-69",
+          "count": 353
+        },
+        {
+          "name": "UBS BB CORRETORA DE CÂMBIO, TÍTULOS E VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "02.819.125/0001-73",
+          "count": 5
+        },
+        {
+          "name": "OBB CAPITAL ASSET MANAGEMENT LTDA.",
+          "tax_id": "42.337.065/0001-77",
+          "count": 2
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "BB GESTAO DE RECURSOS DTVM S.A",
+          "tax_id": "30.822.936/0001-69",
+          "count": 479
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "BANCO DO BRASIL S.A.",
+          "tax_id": "00.000.000/0001-91",
+          "count": 415
+        },
+        {
+          "name": "BB GESTAO DE RECURSOS DTVM S.A",
+          "tax_id": "30.822.936/0001-69",
+          "count": 49
+        }
+      ]
+    },
+    "SANTANDER": {
+      "MANAGER": [
+        {
+          "name": "SANTANDER BRASIL GESTÃO DE RECURSOS LTDA",
+          "tax_id": "10.231.177/0001-52",
+          "count": 221
+        },
+        {
+          "name": "SANTANDER BRASIL ASSET MANAGEMENT S.A.",
+          "tax_id": "10.977.742/0001-25",
+          "count": 185
+        },
+        {
+          "name": "BANCO SANTANDER (BRASIL) S.A.",
+          "tax_id": "90.400.888/0001-42",
+          "count": 137
+        },
+        {
+          "name": "SANTANDER ASSET MANAGEMENT DTVM LTDA.",
+          "tax_id": "73.159.642/0001-01",
+          "count": 109
+        },
+        {
+          "name": "SANTANDER DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "03.502.968/0001-04",
+          "count": 95
+        },
+        {
+          "name": "S3 CACEIS BRASIL DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A",
+          "tax_id": "62.318.407/0001-19",
+          "count": 24
+        },
+        {
+          "name": "ZURICH SANTANDER BRASIL SEGUROS E PREVIDENCIA S.A.",
+          "tax_id": "87.376.109/0001-06",
+          "count": 12
+        },
+        {
+          "name": "SANTANDER INVESTIMENTOS EM PARTICIPAÇÕES S.A.",
+          "tax_id": "02.736.455/0001-03",
+          "count": 2
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "S3 CACEIS BRASIL DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A",
+          "tax_id": "62.318.407/0001-19",
+          "count": 470
+        },
+        {
+          "name": "BANCO SANTANDER (BRASIL) S.A.",
+          "tax_id": "90.400.888/0001-42",
+          "count": 422
+        },
+        {
+          "name": "SANTANDER DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "03.502.968/0001-04",
+          "count": 143
+        },
+        {
+          "name": "SANTANDER ASSET MANAGEMENT DTVM LTDA.",
+          "tax_id": "73.159.642/0001-01",
+          "count": 57
+        },
+        {
+          "name": "SANTANDER BRASIL ASSET MANAGEMENT S.A.",
+          "tax_id": "10.977.742/0001-25",
+          "count": 17
+        },
+        {
+          "name": "BANCO SANTANDER BRASIL SA",
+          "tax_id": "61.472.676/0001-72",
+          "count": 12
+        },
+        {
+          "name": "SANTANDER S.A. CORRETORA DE CÂMBIO E TÍTULOS",
+          "tax_id": "61.510.574/0001-02",
+          "count": 8
+        },
+        {
+          "name": "BANCO SANTANDER S.A.",
+          "tax_id": "33.517.640/0001-22",
+          "count": 2
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "S3 CACEIS BRASIL DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A",
+          "tax_id": "62.318.407/0001-19",
+          "count": 1209
+        },
+        {
+          "name": "BANCO SANTANDER (BRASIL) S.A.",
+          "tax_id": "90.400.888/0001-42",
+          "count": 266
+        },
+        {
+          "name": "SANTANDER CCVM S/A",
+          "tax_id": "51.014.223/0001-49",
+          "count": 8
+        },
+        {
+          "name": "BANCO SANTANDER BRASIL SA",
+          "tax_id": "61.472.676/0001-72",
+          "count": 7
+        }
+      ]
+    },
+    "BNP": {
+      "MANAGER": [
+        {
+          "name": "BNP PARIBAS ASSET MANAGEMENT BRASIL LTDA",
+          "tax_id": "02.562.663/0001-25",
+          "count": 215
+        },
+        {
+          "name": "BANCO BNP PARIBAS BRASIL S/A",
+          "tax_id": "01.522.368/0001-82",
+          "count": 2
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "BANCO BNP PARIBAS BRASIL S/A",
+          "tax_id": "01.522.368/0001-82",
+          "count": 426
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "BANCO BNP PARIBAS BRASIL S/A",
+          "tax_id": "01.522.368/0001-82",
+          "count": 401
+        }
+      ]
+    },
+    "VINCI": {
+      "MANAGER": [
+        {
+          "name": "VINCI SOLUÇÕES DE INVESTIMENTOS LTDA",
+          "tax_id": "13.421.810/0001-63",
+          "count": 95
+        },
+        {
+          "name": "VINCI GESTORA DE RECURSOS LTDA",
+          "tax_id": "11.077.576/0001-73",
+          "count": 38
+        },
+        {
+          "name": "VINCI EQUITIES GESTORA DE RECURSOS LTDA",
+          "tax_id": "10.917.835/0001-64",
+          "count": 22
+        },
+        {
+          "name": "VINCI CAPITAL GESTORA DE RECURSOS LTDA.",
+          "tax_id": "11.079.478/0001-75",
+          "count": 14
+        },
+        {
+          "name": "VINCI VIDA E PREVIDÊNCIA S.A.",
+          "tax_id": "46.938.918/0001-87",
+          "count": 6
+        },
+        {
+          "name": "VINCI REAL ESTATE GESTORA DE RECURSOS LTDA",
+          "tax_id": "13.838.015/0001-75",
+          "count": 4
+        },
+        {
+          "name": "VINCI SPS GESTÃO DE RECURSOS LTDA",
+          "tax_id": "16.954.358/0001-93",
+          "count": 3
+        },
+        {
+          "name": "VINCI INFRAESTRUTURA GESTORA DE RECURSOS LTDA.",
+          "tax_id": "20.859.417/0001-11",
+          "count": 3
+        }
+      ]
+    },
+    "JPMORGAN": {
+      "MANAGER": [
+        {
+          "name": "BANCO J.P. MORGAN S.A.",
+          "tax_id": "33.172.537/0001-98",
+          "count": 68
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "BANCO J.P. MORGAN S.A.",
+          "tax_id": "33.172.537/0001-98",
+          "count": 92
+        }
+      ]
+    },
+    "BNY": {
+      "MANAGER": [
+        {
+          "name": "BNY MELLON ADMINISTRAÇÃO DE ATIVOS LTDA",
+          "tax_id": "05.236.848/0001-38",
+          "count": 68
+        },
+        {
+          "name": "BNY MELLON SERVICOS FINANCEIROS DTVM S.A.",
+          "tax_id": "02.201.501/0001-61",
+          "count": 23
+        },
+        {
+          "name": "BNY MELLON ALOCAÇÃO DE PATRIMÔNIO LTDA",
+          "tax_id": "08.896.477/0001-09",
+          "count": 23
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "BNY MELLON SERVICOS FINANCEIROS DTVM S.A.",
+          "tax_id": "02.201.501/0001-61",
+          "count": 2141
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "BNY MELLON BANCO S.A.",
+          "tax_id": "42.272.526/0001-70",
+          "count": 1531
+        }
+      ]
+    },
+    "JGP": {
+      "MANAGER": [
+        {
+          "name": "JGP GESTÃO PATRIMONIAL LTDA",
+          "tax_id": "09.262.533/0001-16",
+          "count": 66
+        },
+        {
+          "name": "JGP GESTÃO DE RECURSOS LTDA",
+          "tax_id": "02.312.792/0001-65",
+          "count": 38
+        },
+        {
+          "name": "JGP GESTÃO DE CREDITO LTDA",
+          "tax_id": "13.189.882/0001-27",
+          "count": 12
+        },
+        {
+          "name": "JGP REAL ESTATE GESTÃO DE RECURSOS LTDA.",
+          "tax_id": "36.640.941/0001-37",
+          "count": 1
+        }
+      ]
+    },
+    "ARX": {
+      "MANAGER": [
+        {
+          "name": "ARX INVESTIMENTOS LTDA",
+          "tax_id": "04.408.128/0001-40",
+          "count": 64
+        }
+      ]
+    },
+    "KINEA": {
+      "MANAGER": [
+        {
+          "name": "KINEA INVESTIMENTOS LTDA.",
+          "tax_id": "08.604.187/0001-44",
+          "count": 61
+        },
+        {
+          "name": "KINEA PRIVATE EQUITY INVESTIMENTOS S/A",
+          "tax_id": "04.661.817/0001-61",
+          "count": 6
+        }
+      ]
+    },
+    "VERDE": {
+      "MANAGER": [
+        {
+          "name": "VERDE ASSET MANAGEMENT S.A.",
+          "tax_id": "19.749.539/0001-76",
+          "count": 58
+        }
+      ]
+    },
+    "GENIAL": {
+      "MANAGER": [
+        {
+          "name": "PLURAL INVESTIMENTOS GESTÃO DE RECURSOS LTDA.",
+          "tax_id": "09.630.188/0001-26",
+          "count": 58
+        },
+        {
+          "name": "GENIAL GESTÃO LTDA.",
+          "tax_id": "22.119.959/0001-83",
+          "count": 35
+        },
+        {
+          "name": "PLURAL GESTÃO DE RECURSOS LTDA",
+          "tax_id": "11.397.672/0002-80",
+          "count": 33
+        },
+        {
+          "name": "GENIAL INVESTIMENTOS CORRETORA DE VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "27.652.684/0001-62",
+          "count": 3
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "BANCO GENIAL S.A.",
+          "tax_id": "45.246.410/0001-55",
+          "count": 135
+        },
+        {
+          "name": "GENIAL INVESTIMENTOS CORRETORA DE VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "27.652.684/0001-62",
+          "count": 50
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "BANCO GENIAL S.A.",
+          "tax_id": "45.246.410/0001-55",
+          "count": 117
+        }
+      ]
+    },
+    "PATRIA": {
+      "MANAGER": [
+        {
+          "name": "PÁTRIA INVESTIMENTOS LTDA.",
+          "tax_id": "12.461.756/0001-17",
+          "count": 57
+        },
+        {
+          "name": "PÁTRIA VBI REAL ESTATE GESTÃO DE CARTEIRAS SA",
+          "tax_id": "11.274.775/0001-71",
+          "count": 8
+        },
+        {
+          "name": "PÁTRIA VBI ASSET MANAGEMENT LTDA.",
+          "tax_id": "38.300.262/0001-44",
+          "count": 3
+        },
+        {
+          "name": "PÁTRIA INVESTIMENTOS LTDA",
+          "tax_id": "05.145.646/0001-80",
+          "count": 2
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "PÁTRIA INVESTIMENTOS LTDA.",
+          "tax_id": "12.461.756/0001-17",
+          "count": 17
+        },
+        {
+          "name": "PÁTRIA INVESTIMENTOS LTDA",
+          "tax_id": "05.145.646/0001-80",
+          "count": 1
+        }
+      ]
+    },
+    "BAHIA": {
+      "MANAGER": [
+        {
+          "name": "BAHIA AM RENDA FIXA LTDA",
+          "tax_id": "13.151.244/0001-17",
+          "count": 50
+        },
+        {
+          "name": "BAHIA AM RENDA VARIÁVEL LTDA",
+          "tax_id": "13.143.849/0001-66",
+          "count": 39
+        }
+      ]
+    },
+    "DAYCOVAL": {
+      "MANAGER": [
+        {
+          "name": "DAYCOVAL ASSET MANAGEMENT ADMINISTRACAO DE RECURSOS LTDA",
+          "tax_id": "72.027.832/0001-02",
+          "count": 50
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "BANCO DAYCOVAL S.A.",
+          "tax_id": "62.232.889/0001-90",
+          "count": 191
+        },
+        {
+          "name": "DAYCOVAL ASSET MANAGEMENT ADMINISTRACAO DE RECURSOS LTDA",
+          "tax_id": "72.027.832/0001-02",
+          "count": 6
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "BANCO DAYCOVAL S.A.",
+          "tax_id": "62.232.889/0001-90",
+          "count": 256
+        }
+      ]
+    },
+    "MODAL": {
+      "MANAGER": [
+        {
+          "name": "MODAL  D.T.V.M. LTDA",
+          "tax_id": "05.389.174/0001-01",
+          "count": 44
+        },
+        {
+          "name": "BANCO MODAL S.A.",
+          "tax_id": "30.723.886/0001-62",
+          "count": 3
+        },
+        {
+          "name": "MODAL DTVM LTDA",
+          "tax_id": "01.302.766/0001-93",
+          "count": 1
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "MODAL  D.T.V.M. LTDA",
+          "tax_id": "05.389.174/0001-01",
+          "count": 93
+        },
+        {
+          "name": "BANCO MODAL S.A.",
+          "tax_id": "30.723.886/0001-62",
+          "count": 47
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "MODAL  D.T.V.M. LTDA",
+          "tax_id": "05.389.174/0001-01",
+          "count": 68
+        },
+        {
+          "name": "BANCO MODAL S.A.",
+          "tax_id": "30.723.886/0001-62",
+          "count": 52
+        }
+      ]
+    },
+    "GAVEA": {
+      "MANAGER": [
+        {
+          "name": "GAVEA INVESTIMENTOS LTDA",
+          "tax_id": "05.669.128/0001-66",
+          "count": 44
+        },
+        {
+          "name": "J. P. MORGAN GAVEA GESTAO DE PATRIMONIO LTDA",
+          "tax_id": "06.116.930/0001-91",
+          "count": 11
+        },
+        {
+          "name": "GAVEA CRÉDITO ESTRUTURADO GESTÃO DE INVESTIMENTOS LTDA",
+          "tax_id": "09.336.023/0001-46",
+          "count": 2
+        },
+        {
+          "name": "GÁVEA JUS I LTDA.",
+          "tax_id": "08.737.893/0001-64",
+          "count": 1
+        },
+        {
+          "name": "GAVEA GESTAO DE INVESTIMENTOS LTDA",
+          "tax_id": "05.634.054/0001-22",
+          "count": 1
+        }
+      ]
+    },
+    "SPX": {
+      "MANAGER": [
+        {
+          "name": "SPX GESTÃO DE RECURSOS LTDA",
+          "tax_id": "12.330.774/0001-60",
+          "count": 41
+        },
+        {
+          "name": "SPX EQUITIES GESTÃO DE RECURSOS LTDA",
+          "tax_id": "14.595.392/0001-93",
+          "count": 3
+        },
+        {
+          "name": "SPX PRIVATE EQUITY GESTÃO DE RECURSOS LTDA.",
+          "tax_id": "10.632.282/0001-01",
+          "count": 1
+        },
+        {
+          "name": "SPX CRÉDITO GESTÃO DE RECURSOS LTDA.",
+          "tax_id": "34.293.150/0001-52",
+          "count": 1
+        }
+      ]
+    },
+    "BOGARI": {
+      "MANAGER": [
+        {
+          "name": "BOGARI GESTÃO DE INVESTIMENTOS LTDA.",
+          "tax_id": "08.947.719/0001-46",
+          "count": 32
+        }
+      ]
+    },
+    "TRUXT": {
+      "MANAGER": [
+        {
+          "name": "TRUXT INVESTIMENTOS LTDA.",
+          "tax_id": "23.890.968/0001-36",
+          "count": 31
+        }
+      ]
+    },
+    "ADAM": {
+      "MANAGER": [
+        {
+          "name": "ADAMCAPITAL GESTÃO DE RECURSOS LTDA.",
+          "tax_id": "17.905.206/0001-63",
+          "count": 31
+        }
+      ]
+    },
+    "OCCAM": {
+      "MANAGER": [
+        {
+          "name": "OCCAM BRASIL GESTÃO DE RECURSOS LTDA.",
+          "tax_id": "27.916.161/0001-86",
+          "count": 28
+        },
+        {
+          "name": "NOVA OCCAM BRASIL GESTAO DE RECURSOS LTDA.",
+          "tax_id": "43.228.545/0001-62",
+          "count": 1
+        }
+      ]
+    },
+    "ORAMA": {
+      "MANAGER": [
+        {
+          "name": "ÓRAMA DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "13.293.225/0001-25",
+          "count": 25
+        },
+        {
+          "name": "ÓRAMA GESTÃO DE RECURSOS LTDA",
+          "tax_id": "28.014.983/0001-34",
+          "count": 4
+        },
+        {
+          "name": "AZ QUEST PANORAMA LTDA.",
+          "tax_id": "37.783.771/0001-02",
+          "count": 2
+        },
+        {
+          "name": "VALORAMA ASSET MANAGEMENT LTDA.",
+          "tax_id": "43.942.232/0001-71",
+          "count": 1
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "ÓRAMA DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "13.293.225/0001-25",
+          "count": 15
+        }
+      ]
+    },
+    "CONSTELLATION": {
+      "MANAGER": [
+        {
+          "name": "CONSTELLATION INVESTIMENTOS E PARTICIPAÇÕES LTDA",
+          "tax_id": "06.182.127/0001-55",
+          "count": 25
+        }
+      ]
+    },
+    "CITI": {
+      "MANAGER": [
+        {
+          "name": "CITIBANK DTVM SA",
+          "tax_id": "33.868.597/0001-40",
+          "count": 19
+        },
+        {
+          "name": "BANCO CITIBANK SA",
+          "tax_id": "33.479.023/0001-80",
+          "count": 19
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "CITIBANK DTVM SA",
+          "tax_id": "33.868.597/0001-40",
+          "count": 155
+        },
+        {
+          "name": "BANCO CITIBANK SA",
+          "tax_id": "33.479.023/0001-80",
+          "count": 3
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "CITIBANK DTVM SA",
+          "tax_id": "33.868.597/0001-40",
+          "count": 213
+        },
+        {
+          "name": "BANCO CITIBANK SA",
+          "tax_id": "33.479.023/0001-80",
+          "count": 1
+        }
+      ]
+    },
+    "NAVI": {
+      "MANAGER": [
+        {
+          "name": "NAVI CAPITAL ADMINISTRADORA E GESTORA DE RECURSOS FINANCEIROS LTDA.",
+          "tax_id": "27.133.825/0001-30",
+          "count": 17
+        },
+        {
+          "name": "NAVI REAL ESTATE SELECTION - ADMINISTRADORA E GESTORA DE RECURSOS FINANCEIROS LTDA.",
+          "tax_id": "37.658.373/0001-64",
+          "count": 6
+        },
+        {
+          "name": "NAVI YIELD - ADMINISTRADORA E GESTORA DE RECURSOS FINANCEIROS LTDA.",
+          "tax_id": "34.745.508/0001-30",
+          "count": 5
+        },
+        {
+          "name": "NAVI ALLOCATION - ADMINISTRADORA E GESTORA DE RECURSOS FINANCEIROS LTDA.",
+          "tax_id": "37.653.353/0001-09",
+          "count": 2
+        }
+      ]
+    },
+    "ABSOLUTO": {
+      "MANAGER": [
+        {
+          "name": "ABSOLUTO PARTNERS GESTÃO DE RECURSOS LTDA.",
+          "tax_id": "32.541.657/0001-52",
+          "count": 15
+        }
+      ]
+    },
+    "KAPITALO": {
+      "MANAGER": [
+        {
+          "name": "KAPITALO INVESTIMENTOS LTDA.",
+          "tax_id": "11.180.009/0001-48",
+          "count": 13
+        },
+        {
+          "name": "KAPITALO CICLO GESTORA DE RECURSOS FINANCEIROS LTDA",
+          "tax_id": "20.429.285/0001-98",
+          "count": 3
+        },
+        {
+          "name": "KAPITALO NEXO GESTÃO DE RECURSOS LTDA.",
+          "tax_id": "40.113.816/0001-46",
+          "count": 1
+        }
+      ]
+    },
+    "DYNAMO": {
+      "MANAGER": [
+        {
+          "name": "DYNAMO V. C . ADMINISTRADORA DE RECURSOS LTDA",
+          "tax_id": "03.215.562/0001-40",
+          "count": 9
+        },
+        {
+          "name": "DYNAMO ADMINISTRAÇÃO DE RECURSOS LTDA",
+          "tax_id": "72.116.353/0001-62",
+          "count": 5
+        },
+        {
+          "name": "DYNAMO INTERNACIONAL GESTÃO DE RECURSOS LTDA.",
+          "tax_id": "07.880.927/0001-02",
+          "count": 1
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "DYNAMO V. C . ADMINISTRADORA DE RECURSOS LTDA",
+          "tax_id": "03.215.562/0001-40",
+          "count": 9
+        },
+        {
+          "name": "DYNAMO ADMINISTRAÇÃO DE RECURSOS LTDA",
+          "tax_id": "72.116.353/0001-62",
+          "count": 3
+        }
+      ]
+    },
+    "RICO": {
+      "MANAGER": [
+        {
+          "name": "CARLOS GUILHERME FREDERICO SCHILLER DE SOUZA",
+          "tax_id": "004.707.387-07",
+          "count": 2
+        },
+        {
+          "name": "RICO CORRETORA DE TÍTULOS E VALORES MOBILIÁRIOS S.A.",
+          "tax_id": "13.434.335/0001-60",
+          "count": 2
+        }
+      ],
+      "CUSTODIAN": [
+        {
+          "name": "BANCO CREDIT AGRICOLE BRASIL S/A",
+          "tax_id": "75.647.891/0001-71",
+          "count": 22
+        }
+      ]
+    },
+    "CLEAR": {
+      "MANAGER": [
+        {
+          "name": "BANCO ABN AMRO CLEARING S.A.",
+          "tax_id": "03.532.415/0001-02",
+          "count": 1
+        }
+      ],
+      "ADMINISTRATOR": [
+        {
+          "name": "BANCO ABN AMRO CLEARING S.A.",
+          "tax_id": "03.532.415/0001-02",
+          "count": 5
+        }
+      ]
+    },
+    "IP": {
+      "MANAGER": [
+        {
+          "name": "SIP CAPITAL EQUITIES INVESTIMENTOS LTDA",
+          "tax_id": "12.434.405/0001-17",
+          "count": 1
+        }
+      ]
+    },
+    "VOTORANTIM": {
+      "CUSTODIAN": [
+        {
+          "name": "BANCO VOTORANTIM S.A.",
+          "tax_id": "59.588.111/0001-03",
+          "count": 5
+        }
+      ]
+    }
+  },
+  "uncategorized_significant": [
+    {
+      "name": "BEM - DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS LTDA.",
+      "role": "ADMINISTRATOR",
+      "count": 1486
+    },
+    {
+      "name": "UBS (BRASIL) CORRETORA DE VALORES S.A",
+      "role": "ADMINISTRATOR",
+      "count": 1112
+    },
+    {
+      "name": "ITAÚ INVESTMENT SOLUTIONS S.A.",
+      "role": "MANAGER",
+      "count": 702
+    },
+    {
+      "name": "SINGULARE CORRETORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 493
+    },
+    {
+      "name": "SINGULARE CORRETORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "CUSTODIAN",
+      "count": 415
+    },
+    {
+      "name": "BRL TRUST DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "CUSTODIAN",
+      "count": 334
+    },
+    {
+      "name": "TIVIO CAPITAL DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "MANAGER",
+      "count": 228
+    },
+    {
+      "name": "BRL TRUST DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 212
+    },
+    {
+      "name": "ID CORRETORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "CUSTODIAN",
+      "count": 205
+    },
+    {
+      "name": "TIVIO CAPITAL DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 199
+    },
+    {
+      "name": "OLIVEIRA TRUST DTVM S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 188
+    },
+    {
+      "name": "ID CORRETORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 179
+    },
+    {
+      "name": "WESTERN ASSET MANAGEMENT COMPANY LIMITADA",
+      "role": "MANAGER",
+      "count": 174
+    },
+    {
+      "name": "OLIVEIRA TRUST DTVM S.A.",
+      "role": "CUSTODIAN",
+      "count": 168
+    },
+    {
+      "name": "PLANNER CORRETORA DE VALORES S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 164
+    },
+    {
+      "name": "TRUSTEE DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS LTDA.",
+      "role": "ADMINISTRATOR",
+      "count": 156
+    },
+    {
+      "name": "TRUSTEE DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS LTDA.",
+      "role": "CUSTODIAN",
+      "count": 156
+    },
+    {
+      "name": "VORTX DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS LTDA.",
+      "role": "ADMINISTRATOR",
+      "count": 155
+    },
+    {
+      "name": "VORTX DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS LTDA.",
+      "role": "CUSTODIAN",
+      "count": 147
+    },
+    {
+      "name": "REAG TRUST DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "CUSTODIAN",
+      "count": 146
+    },
+    {
+      "name": "CAIXA ECONOMICA FEDERAL",
+      "role": "ADMINISTRATOR",
+      "count": 144
+    },
+    {
+      "name": "PLANNER CORRETORA DE VALORES S.A.",
+      "role": "CUSTODIAN",
+      "count": 142
+    },
+    {
+      "name": "KIRTON BANK S.A. - BANCO MÚLTIPLO",
+      "role": "ADMINISTRATOR",
+      "count": 141
+    },
+    {
+      "name": "AGORA GESTAO DE RECURSOS LTDA.",
+      "role": "MANAGER",
+      "count": 126
+    },
+    {
+      "name": "BRASILPREV SEGUROS E PREVIDÊNCIA S.A",
+      "role": "MANAGER",
+      "count": 125
+    },
+    {
+      "name": "BRL TRUST INVESTIMENTOS LTDA.",
+      "role": "ADMINISTRATOR",
+      "count": 123
+    },
+    {
+      "name": "REAG TRUST DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 123
+    },
+    {
+      "name": "INTRA INVESTIMENTOS DTVM LTDA",
+      "role": "ADMINISTRATOR",
+      "count": 121
+    },
+    {
+      "name": "KIRTON BANK S.A. - BANCO MÚLTIPLO",
+      "role": "CUSTODIAN",
+      "count": 117
+    },
+    {
+      "name": "TERCON INVESTIMENTOS LTDA",
+      "role": "MANAGER",
+      "count": 115
+    },
+    {
+      "name": "TURMALINA GESTÃO E ADMINISTRAÇÃO DE RECURSOS S.A.",
+      "role": "MANAGER",
+      "count": 113
+    },
+    {
+      "name": "MASSA FALIDA DA GRADUAL CORRETORA DE CÂMBIO, TÍTULOS E VALORES MOBILIÁRIOS S. A.",
+      "role": "ADMINISTRATOR",
+      "count": 110
+    },
+    {
+      "name": "G5 ADMINISTRADORA DE RECURSOS LTDA.",
+      "role": "MANAGER",
+      "count": 109
+    },
+    {
+      "name": "SUL AMERICA INVESTIMENTOS DTVM S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 109
+    },
+    {
+      "name": "WESTERN ASSET MANAGEMENT COMPANY LIMITADA",
+      "role": "ADMINISTRATOR",
+      "count": 108
+    },
+    {
+      "name": "TURMALINA GESTÃO E ADMINISTRAÇÃO DE RECURSOS S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 107
+    },
+    {
+      "name": "BANCO B3 S.A.",
+      "role": "CUSTODIAN",
+      "count": 106
+    },
+    {
+      "name": "TURIM 21 INVESTIMENTOS LTDA",
+      "role": "MANAGER",
+      "count": 102
+    },
+    {
+      "name": "BANCO FINAXIS S.A.",
+      "role": "CUSTODIAN",
+      "count": 102
+    },
+    {
+      "name": "OURO PRETO GESTÃO DE RECURSOS S.A.",
+      "role": "MANAGER",
+      "count": 100
+    },
+    {
+      "name": "OLIVEIRA TRUST SERVICER S/A",
+      "role": "MANAGER",
+      "count": 96
+    },
+    {
+      "name": "REAG TRUST ADMINISTRADORA DE RECURSOS LTDA.",
+      "role": "MANAGER",
+      "count": 96
+    },
+    {
+      "name": "PLANNER CORRETORA DE VALORES S.A.",
+      "role": "MANAGER",
+      "count": 95
+    },
+    {
+      "name": "INTRA INVESTIMENTOS DTVM LTDA",
+      "role": "CUSTODIAN",
+      "count": 95
+    },
+    {
+      "name": "BRL TRUST INVESTIMENTOS LTDA.",
+      "role": "MANAGER",
+      "count": 94
+    },
+    {
+      "name": "INTER ASSET GESTÃO DE RECURSOS LTDA.",
+      "role": "MANAGER",
+      "count": 93
+    },
+    {
+      "name": "BANCO ALFA DE INVESTIMENTO S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 85
+    },
+    {
+      "name": "BANVOX DISTRIBUIDORA DE TITULOS E VALORES MOBILI?RIOS LTDA",
+      "role": "ADMINISTRATOR",
+      "count": 85
+    },
+    {
+      "name": "FINAXIS CORRETORA DE TÍTULOS E VALORES MOBILIÁRIOS S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 84
+    },
+    {
+      "name": "GESTORA DE RECURSOS ID - GRID LTDA",
+      "role": "MANAGER",
+      "count": 83
+    },
+    {
+      "name": "BANCO ALFA DE INVESTIMENTO S.A.",
+      "role": "MANAGER",
+      "count": 82
+    },
+    {
+      "name": "TIVIO CAPITAL DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "CUSTODIAN",
+      "count": 82
+    },
+    {
+      "name": "SEFER INVESTIMENTOS DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIÁRIOS LTDA.",
+      "role": "CUSTODIAN",
+      "count": 78
+    },
+    {
+      "name": "INTER DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIÁRIOS",
+      "role": "ADMINISTRATOR",
+      "count": 75
+    },
+    {
+      "name": "BANCO ABN AMRO REAL S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 75
+    },
+    {
+      "name": "SEFER INVESTIMENTOS DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIÁRIOS LTDA.",
+      "role": "ADMINISTRATOR",
+      "count": 75
+    },
+    {
+      "name": "BANCO ABN AMRO REAL S.A.",
+      "role": "CUSTODIAN",
+      "count": 74
+    },
+    {
+      "name": "BANCO FATOR S/A",
+      "role": "ADMINISTRATOR",
+      "count": 73
+    },
+    {
+      "name": "INTER DISTRIBUIDORA DE TÍTULOS E VALORES MOBILIÁRIOS",
+      "role": "CUSTODIAN",
+      "count": 72
+    },
+    {
+      "name": "WEALTH HIGH GOVERNANCE CAPITAL LTDA.",
+      "role": "MANAGER",
+      "count": 68
+    },
+    {
+      "name": "EMPIRICUS ASSET MANAGEMENT  LTDA.",
+      "role": "MANAGER",
+      "count": 64
+    },
+    {
+      "name": "PETRA CAPITAL GESTÃO DE INVESTIMENTOS LTDA",
+      "role": "MANAGER",
+      "count": 63
+    },
+    {
+      "name": "UAM - ASSESSORIA E GESTÃO DE INVESTIMENTOS LTDA.",
+      "role": "MANAGER",
+      "count": 62
+    },
+    {
+      "name": "AZIMUT BRASIL WEALTH MANAGEMENT LTDA",
+      "role": "MANAGER",
+      "count": 62
+    },
+    {
+      "name": "SUL AMÉRICA INVESTIMENTOS GESTORA DE RECURSOS S.A.",
+      "role": "MANAGER",
+      "count": 61
+    },
+    {
+      "name": "OLIVEIRA TRUST DTVM S.A.",
+      "role": "MANAGER",
+      "count": 61
+    },
+    {
+      "name": "OSLO CAPITAL DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS S.A.",
+      "role": "ADMINISTRATOR",
+      "count": 61
+    },
+    {
+      "name": "PRINCIPAL ASSET MANAGEMENT LTDA.",
+      "role": "MANAGER",
+      "count": 58
+    },
+    {
+      "name": "UBS BRASIL ADMINISTRADORA DE VALORES MOBILIÁRIOS LTDA.",
+      "role": "MANAGER",
+      "count": 58
+    },
+    {
+      "name": "FAR FATOR ADMINISTRAÇÃO DE RECURSOS LTDA",
+      "role": "MANAGER",
+      "count": 57
+    },
+    {
+      "name": "ICATU VANGUARDA GESTÃO DE RECURSOS LTDA",
+      "role": "MANAGER",
+      "count": 57
+    },
+    {
+      "name": "AZ QUEST INVESTIMENTOS LTDA.",
+      "role": "MANAGER",
+      "count": 57
+    },
+    {
+      "name": "OLIVEIRA TRUST SERVICER S/A",
+      "role": "ADMINISTRATOR",
+      "count": 57
+    },
+    {
+      "name": "REAG TRUST ADMINISTRADORA DE RECURSOS LTDA.",
+      "role": "ADMINISTRATOR",
+      "count": 56
+    },
+    {
+      "name": "MASSA FALIDA DA GRADUAL CORRETORA DE CÂMBIO, TÍTULOS E VALORES MOBILIÁRIOS S. A.",
+      "role": "MANAGER",
+      "count": 55
+    },
+    {
+      "name": "JIVE HIGH YIELD GESTÃO DE RECURSOS LTDA.",
+      "role": "MANAGER",
+      "count": 55
+    },
+    {
+      "name": "TERRA INVESTIMENTOS DISTRIBUIDORA DE TITULOS E VALORES MOBILIARIOS LTDA",
+      "role": "CUSTODIAN",
+      "count": 54
+    },
+    {
+      "name": "WNT GESTORA DE RECURSOS LTDA",
+      "role": "MANAGER",
+      "count": 53
+    },
+    {
+      "name": "MASTER S/A CORRETORA DE CAMBIO, TITULOS E VALORES MOBILIARIOS",
+      "role": "ADMINISTRATOR",
+      "count": 53
+    },
+    {
+      "name": "WE CAPITAL INVESTIMENTOS LTDA.",
+      "role": "MANAGER",
+      "count": 52
+    },
+    {
+      "name": "MILES CAPITAL LTDA.",
+      "role": "MANAGER",
+      "count": 52
+    },
+    {
+      "name": "CM CAPITAL MARKETS CCTVM LTDA",
+      "role": "CUSTODIAN",
+      "count": 51
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+# Ruff configuration - Python formatter and linter
+# Similar to Prettier for TypeScript
+
+# Line length (same as Black's default)
+line-length = 100
+
+[lint]
+# Enable recommended rules
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort (import sorting)
+    "UP",  # pyupgrade (modern Python syntax)
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+]
+
+# Rules to ignore
+ignore = [
+    "E501", # Line too long (handled by formatter)
+]
+
+[format]
+# Use double quotes for strings (like Prettier)
+quote-style = "double"
+
+# Indent with spaces
+indent-style = "space"
+
+# Format docstrings
+docstring-code-format = true

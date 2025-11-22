@@ -1,0 +1,21 @@
+execution_duration_ms: 23519
+request_preview: '{"question": "give me itau funds"}'
+request_time: '2025-11-22T01:32:53.580Z'
+response_preview: '{"trajectory": {"thought_0": "I need to identify funds associated
+  with Itaú. I will parse the query to extract the necessary search criteria, specifically
+  looking for funds related to the legal name \"Itaú\".", "tool_name_0": "parse",
+  "tool_args_0": {"query": "give me itau funds"}, "observation_0": {"fund_legal_name":
+  "itau", "fund_type": null, "investment_class": null, "fund_of_funds": null, "target_audience":
+  null, "manager_type": null, "is_exclusive_fund": null, "can_invest_abroad_100_pct":
+  null, "has_long_term_taxation": null}, "thought_1": "I have parsed the query successfully
+  and extracted the fund legal name as \"Itaú\". Now I will search for funds that
+  match this legal name to retrieve the relevant funds.", "tool_name_1": "search",
+  "tool_args_1": {"criteria": {"fund_legal_name": "itau"}, "limit": 10}, "observation_1":
+  [{"legal_name": "ITAUA FUNDO DE INVESTIMENTO FINANCEIRO MULTIMERCADO CRÉDITO PRIVADO
+  RESPONSABILIDADE LIMITADA", "cnpj": "44.371.560/0001-28", "fund_type": "CL...'
+state: OK
+trace_id: tr-7525dfe061d1247ddeaa5ce8b9820068
+trace_location:
+  mlflow_experiment:
+    experiment_id: '140406124387526459'
+  type: MLFLOW_EXPERIMENT
