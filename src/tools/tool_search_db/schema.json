@@ -1,6 +1,6 @@
 {
   "tool_name": "tool_search_db",
-  "description": "Search for Brazilian investment funds in the database using structured criteria. Returns a list of funds with their metadata.",
+  "description": "Search for Brazilian investment funds in the database using structured criteria. Returns a list of funds with their metadata. ALWAYS include the CNPJ from the results in your final answer.",
   "input_schema": {
     "criteria": {
       "type": "object",

@@ -26,10 +26,10 @@ MLflow requires a tracking server to store traces. Start it with:
 
 ```bash
 # Using SQLite backend (recommended for local development)
-mlflow server --backend-store-uri sqlite:///mlflow.db --port 5000
+mlflow server --backend-store-uri sqlite:///src/mlflow/mlflow.db --default-artifact-root ./src/mlflow/mlartifacts --port 5001
 ```
 
-The server will be available at `http://127.0.0.1:5000`
+The server will be available at `http://127.0.0.1:5001`
 
 **Note**: It's highly recommended to use a SQL store (SQLite or PostgreSQL) when using MLflow tracing, as it provides better performance and reliability than the default file store.
 
@@ -46,7 +46,7 @@ Edit `.env`:
 ```env
 # MLflow Configuration
 MLFLOW_ENABLED=true
-MLFLOW_TRACKING_URI=http://127.0.0.1:5000
+MLFLOW_TRACKING_URI=http://127.0.0.1:5001
 MLFLOW_EXPERIMENT_NAME=FundSearch-DSPy
 ```
 
@@ -86,7 +86,7 @@ from src.agent.orchestrator import FundSearchOrchestrator
 orchestrator = FundSearchOrchestrator(
     api_key="your-api-key",
     enable_mlflow=True,
-    mlflow_tracking_uri="http://127.0.0.1:5000",
+    mlflow_tracking_uri="http://127.0.0.1:5001",
     mlflow_experiment_name="FundSearch-DSPy",
 )
 ```
@@ -98,7 +98,7 @@ orchestrator = FundSearchOrchestrator(
 Open your browser and navigate to:
 
 ```
-http://127.0.0.1:5000
+http://127.0.0.1:5001
 ```
 
 ### 2. Select Your Experiment
@@ -224,7 +224,7 @@ MLflow can track custom metrics across runs. You can extend the orchestrator to 
 **Solution**: Ensure the MLflow server is running:
 
 ```bash
-mlflow server --backend-store-uri sqlite:///mlflow.db --port 5000
+mlflow server --backend-store-uri sqlite:///src/mlflow/mlflow.db --default-artifact-root ./src/mlflow/mlartifacts --port 5001
 ```
 
 ### Traces Not Appearing

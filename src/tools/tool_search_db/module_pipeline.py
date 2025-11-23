@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 from src.tools.tool_parse_query.module_pipeline import FundSearchCriteria
 
 # Load entity correlations
-ENTITY_MAP_PATH = "src/infrastructure/db/extracted/entity_correlations.json"
+ENTITY_MAP_PATH = "src/infrastructure/database/extracted/entity_correlations.json"
 ENTITY_MAP = {}
 
 if os.path.exists(ENTITY_MAP_PATH):
@@ -34,7 +34,7 @@ class FundResult(BaseModel):
 
 def search_funds(
     criteria: FundSearchCriteria,
-    db_path: str = "src/infrastructure/db/br_funds.db",
+    db_path: str = "src/infrastructure/database/br_funds.db",
     limit: int = 10,
 ) -> list[FundResult]:
     """Search for funds in the database using structured criteria.
@@ -89,12 +89,9 @@ def search_funds(
         # Note: DuckDB Python client list binding can be tricky, so we join strings safely here since they are tax_ids
         cnpj_list_str = "', '".join(entity_cnpjs)
 
+        # Build list of tax_id values from service_providers
         provider_clause = f"""
-            EXISTS (
-                SELECT 1 
-                FROM unnest(service_providers) as sp 
-                WHERE sp.tax_id IN ('{cnpj_list_str}')
-            )
+            len(list_filter(service_providers, x -> x.tax_id IN ('{cnpj_list_str}'))) > 0
         """
 
         where_clauses.append(f"({name_clause} OR {provider_clause})")
@@ -103,11 +100,7 @@ def search_funds(
         # Only entity search
         cnpj_list_str = "', '".join(entity_cnpjs)
         where_clauses.append(f"""
-            EXISTS (
-                SELECT 1 
-                FROM unnest(service_providers) as sp 
-                WHERE sp.tax_id IN ('{cnpj_list_str}')
-            )
+            len(list_filter(service_providers, x -> x.tax_id IN ('{cnpj_list_str}'))) > 0
         """)
 
     elif name_clause:
@@ -168,10 +161,10 @@ def search_funds(
         result = conn.execute(query, params).fetchall()
     except Exception as e:
         print(f"Error executing query: {e}")
-        # Fallback if unnest logic fails or something else goes wrong
+        # Fallback if service provider logic fails or something else goes wrong
         # Simplified query without provider logic if it was the cause
-        if "unnest" in query:
-            fallback_where = [c for c in where_clauses if "unnest" not in c]
+        if "list_filter(service_providers" in query:
+            fallback_where = [c for c in where_clauses if "list_filter(service_providers" not in c]
             where_sql = " AND ".join(fallback_where) if fallback_where else "1=1"
             query = f"""
                 SELECT

@@ -1,10 +1,11 @@
 """ReAct-based agent orchestrator for fund search."""
 
 import dspy
-import mlflow
 
+import mlflow
 from src.tools.tool_parse_query.index import _FundQueryParserInternal
 from src.tools.tool_search_db.index import _FundSearchInternal
+from src.tools.tool_semantic_search.index import _FundSemanticSearchInternal
 
 
 class FundSearchOrchestrator:
@@ -50,11 +51,12 @@ class FundSearchOrchestrator:
         # Note: Using internal classes for ReAct compatibility
         parser = _FundQueryParserInternal()
         searcher = _FundSearchInternal()
+        semantic_searcher = _FundSemanticSearchInternal()
 
         # Create ReAct agent with tools
         self.agent = dspy.ReAct(
             signature="question -> answer",
-            tools=[parser.parse, searcher.search],
+            tools=[parser.parse, searcher.search, semantic_searcher.search_semantic],
             max_iters=5,
         )
 

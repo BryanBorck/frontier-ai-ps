@@ -44,5 +44,16 @@ Thumbs.db
 # uv
 .uv/
 
-# Folders
-src/utils/db
+# MLflow Artifacts (Local)
+mlruns/
+mlartifacts/
+mlflow.db
+
+# Data & Database Files (Should not be committed)
+*.db
+src/infrastructure/database/*.db
+temp_meta/
+
+# Temporary Files
+temp/
+tmp/

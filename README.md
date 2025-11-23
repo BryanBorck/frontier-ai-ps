@@ -4,13 +4,14 @@ A command-line interface for interacting with DSPy agents with conversation hist
 
 ## Features
 
-- 🤖 **Conversation History**: Maintains context across chat sessions using DSPy's History utility
-- 💬 **Interactive Chat Mode**: Have natural conversations with the agent
-- ❓ **Single-Question Mode**: Ask one-off questions without history
-- 🎨 **Rich Terminal UI**: Beautiful interface with tables, panels, and syntax highlighting
-- 🔧 **Flexible Model Support**: Works with Gemini, OpenAI, and other LiteLLM-supported models
-- 📊 **History Commands**: View and manage conversation history in real-time
-- 🌍 **Environment-based Configuration**: Easy setup with .env files
+- **Conversation History**: Maintains context across chat sessions using DSPy's History utility
+- **Interactive Chat Mode**: Have natural conversations with the agent
+- **Single-Question Mode**: Ask one-off questions without history
+- **Rich Terminal UI**: Beautiful interface with tables, panels, and syntax highlighting
+- **Flexible Model Support**: Works with OpenAI and other LiteLLM-supported models
+- **History Commands**: View and manage conversation history in real-time
+- **Environment-based Configuration**: Easy setup with .env files
+- **MLflow Integration**: Optional tracing and evaluation of agent interactions
 
 ## Prerequisites
 
@@ -21,20 +22,23 @@ A command-line interface for interacting with DSPy agents with conversation hist
 ## Installation
 
 1. Clone the repository:
+
 ```bash
 git clone <your-repo-url>
 cd frontier-ai-ps
 ```
 
 2. Install dependencies using uv:
+
 ```bash
 uv sync
 ```
 
 3. Set up your environment variables:
+
 ```bash
 cp .env.example .env
-# Edit .env and add your GEMINI_API_KEY (or GOOGLE_API_KEY or OPENAI_API_KEY)
+# Edit .env and add your OPENAI_API_KEY
 ```
 
 ## Usage
@@ -50,6 +54,7 @@ uv run dspy-agent ask "What is the capital of France?"
 ```
 
 With a custom model:
+
 ```bash
 # Using OpenAI
 uv run dspy-agent ask "What is the capital of France?" --model openai/gpt-4o
@@ -69,11 +74,13 @@ uv run dspy-agent chat
 This starts an interactive session with conversation history management. The agent will remember all previous questions and answers in the session.
 
 **Available commands in chat mode:**
+
 - `history` - View the full conversation history in a formatted table
 - `clear` - Reset the conversation history
 - `exit`, `quit`, or `q` - End the session
 
 **Example conversation:**
+
 ```
 You: What is the capital of France?
 Agent: The capital of France is Paris.
@@ -89,6 +96,7 @@ Conversation history cleared!
 ```
 
 View history at the end of session:
+
 ```bash
 uv run dspy-agent chat --show-history
 ```
@@ -99,41 +107,59 @@ uv run dspy-agent chat --show-history
 uv run dspy-agent version
 ```
 
+### MLflow Integration (Optional)
+
+To enable tracing and evaluation with MLflow:
+
+1. Start the MLflow server:
+
+```bash
+./scripts/start_mlflow.sh
+```
+
+2. Run commands with MLflow enabled:
+
+```bash
+# Ask with MLflow tracing
+uv run dspy-agent ask "Find funds managed by BTG Pactual" --mlflow
+
+# Chat with MLflow tracing
+uv run dspy-agent chat --mlflow
+```
+
+3. View traces in the MLflow UI at `http://127.0.0.1:5001`
+
+For more details, see [MLflow Integration Guide](docs/mlflow-integration.md) and [scripts/README.md](scripts/README.md).
+
 ## Configuration
 
 ### Environment Variables
 
 Set these in your `.env` file:
 
-1. **API Keys** (you only need one):
-   - `GEMINI_API_KEY`: Your Google Gemini API key (recommended)
-   - `GOOGLE_API_KEY`: Alternative to GEMINI_API_KEY
-   - `OPENAI_API_KEY`: Your OpenAI API key (if using OpenAI models)
+1. **API Keys**:
 
-2. **Optional Settings**:
-   - `MODEL`: Default model to use (defaults to `gemini/gemini-2.0-flash-exp`)
+   - `OPENAI_API_KEY`: Your OpenAI API key
+
+2. **MLflow Settings** (optional):
+   - `MLFLOW_ENABLED`: Set to `true` to enable MLflow tracing
+   - `MLFLOW_TRACKING_URI`: MLflow server URL (e.g., `http://127.0.0.1:5001`)
+   - `MLFLOW_EXPERIMENT_NAME`: Name for your MLflow experiment (defaults to `FundSearch-DSPy`)
 
 ### Command-line Options
 
-- `--model` / `-m`: Specify the model to use
+- `--model` / `-m`: Specify the model to use (defaults to `gpt-4.1-mini`)
 - `--api-key`: Provide API key directly (overrides environment variable)
 - `--show-history`: (chat mode only) Show conversation history when exiting
+- `--mlflow` / `--no-mlflow`: Enable or disable MLflow tracing
 
 ### Supported Models
 
-The CLI supports any model available through [LiteLLM](https://docs.litellm.ai/docs/providers). Common options:
+The CLI uses OpenAI models. Common options:
 
-**Gemini (Google):**
-- `gemini/gemini-2.0-flash-exp` (default, fastest)
-- `gemini/gemini-1.5-pro` (most capable)
-- `gemini/gemini-1.5-flash` (balanced)
-
-**OpenAI:**
-- `openai/gpt-4o` (most capable)
-- `openai/gpt-4.1-mini` (fast and economical)
-- `openai/gpt-4-turbo`
-
-**And many more!** Check [LiteLLM docs](https://docs.litellm.ai/docs/providers) for the full list.
+- `gpt-4.1-mini` (default, fast and economical)
+- `gpt-4o` (most capable)
+- `gpt-4-turbo`
 
 ## How It Works
 
@@ -151,12 +177,30 @@ This CLI uses DSPy's conversation history management feature (`dspy.History`) to
 ```
 .
 ├── src/
-│   └── cli/
-│       ├── __init__.py
-│       ├── main.py      # CLI interface with history commands
-│       └── agent.py     # DSPy agent with conversation history
-├── pyproject.toml       # Project configuration
-├── .env.example         # Example environment variables
+│   ├── agent/                    # Agent orchestration
+│   │   └── orchestrator.py      # ReAct-based fund search orchestrator
+│   ├── cli/                     # CLI interface
+│   │   ├── __init__.py
+│   │   └── main.py              # CLI commands (ask, chat)
+│   ├── tools/                   # DSPy tools
+│   │   ├── tool_parse_query/    # Query parsing tool
+│   │   └── tool_search_db/      # Database search tool
+│   ├── infrastructure/          # Infrastructure code
+│   │   ├── database/            # Database adapters and utilities
+│   │   └── ingestion/           # Data ingestion scripts
+│   ├── evaluation/              # Evaluation and optimization
+│   │   ├── evaluate.py          # Evaluation scripts
+│   │   └── optimize.py          # DSPy optimization
+│   └── mlflow/                  # MLflow tracking data
+│       ├── mlflow.db            # MLflow database
+│       ├── mlruns/              # MLflow runs
+│       └── mlartifacts/         # MLflow artifacts
+├── scripts/                     # Helper scripts
+│   ├── start_mlflow.sh          # Start MLflow server
+│   └── README.md                # Scripts documentation
+├── docs/                        # Documentation
+│   └── mlflow-integration.md    # MLflow guide
+├── pyproject.toml               # Project configuration
 └── README.md
 ```
 
