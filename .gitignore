@@ -54,6 +54,9 @@ mlflow.db
 src/infrastructure/database/*.db
 temp_meta/
 
+# CVM/Lamina data files (large CSV files)
+src/infrastructure/ingestion/cvm/lamina/data/
+
 # Temporary Files
 temp/
 tmp/
