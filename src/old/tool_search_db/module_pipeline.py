@@ -121,11 +121,11 @@ def search_funds(
 
     if criteria.target_audience is not None:
         where_clauses.append("target_audience = $target_audience")
-        params["target_audience"] = criteria.target_audience.value
+        params["target_audience"] = criteria.target_audience
 
     if criteria.manager_type is not None:
         where_clauses.append("manager_type = $manager_type")
-        params["manager_type"] = criteria.manager_type.value
+        params["manager_type"] = criteria.manager_type
 
     if criteria.is_exclusive_fund is not None:
         where_clauses.append("is_exclusive_fund = $is_exclusive_fund")

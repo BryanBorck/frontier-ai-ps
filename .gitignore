@@ -58,6 +58,9 @@ temp_meta/
 # CVM/Lamina data files (large CSV files)
 src/infrastructure/ingestion/cvm/lamina/data/
 
+# Extracted database files (large JSON files)
+src/infrastructure/database/extracted/
+
 # Temporary Files
 temp/
 tmp/
