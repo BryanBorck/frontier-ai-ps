@@ -52,6 +52,7 @@ mlflow.db
 # Data & Database Files (Should not be committed)
 *.db
 src/infrastructure/database/*.db
+src/infrastructure/db/*.db
 temp_meta/
 
 # CVM/Lamina data files (large CSV files)
