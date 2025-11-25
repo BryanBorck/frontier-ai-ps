@@ -1,18 +1,19 @@
 import duckdb
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 # Paths
 FUNDS_DB = "src/infrastructure/database/br_funds.db"
 BENCHMARKS_DB = "src/infrastructure/database/benchmarks.db"
 
+
 def calculate_metrics():
     print("Starting Metrics Calculation Engine...")
-    
+
     # 1. Connect and Attach
     conn = duckdb.connect(FUNDS_DB)
     conn.execute(f"ATTACH '{BENCHMARKS_DB}' AS benchmarks_db")
-    
+
     # 2. Prepare Benchmarks (IBOVESPA)
     # Calculate daily returns for benchmark
     print("Preparing Benchmark Data...")
@@ -30,19 +31,19 @@ def calculate_metrics():
         WHERE daily_return IS NOT NULL
     """
     bench_df = conn.execute(bench_query).fetchdf()
-    bench_df['date'] = pd.to_datetime(bench_df['date'])
-    bench_df = bench_df.set_index('date')
-    
+    bench_df["date"] = pd.to_datetime(bench_df["date"])
+    bench_df = bench_df.set_index("date")
+
     # 3. Prepare Fund Data (Daily Returns)
     # We process in chunks or per fund to avoid memory issues if dataset is huge.
     # For 60k funds, getting ALL daily returns might be heavy (10M rows).
-    # DuckDB handles large data well, but pandas merge might lag. 
+    # DuckDB handles large data well, but pandas merge might lag.
     # Let's try to do most heavy lifting in SQL.
-    
+
     print("Calculating Daily Returns for Funds...")
     # We use fund_snapshots. timestamp is ISO string, need to cast to DATE
     # share_price is STRUCT(value, currency).
-    
+
     # Create a temp table for fund returns
     conn.execute("DROP TABLE IF EXISTS fund_returns")
     conn.execute("""
@@ -64,23 +65,23 @@ def calculate_metrics():
         )
         SELECT * FROM calc_ret WHERE daily_return IS NOT NULL
     """)
-    
+
     # 4. Aggregate Metrics (Window: 12 Months)
     # We'll calculate for the last available year of data for each fund
     # For Sharpe, we assume Risk Free Rate = 10% p.a. roughly = 0.000378 daily (since we don't have CDI series yet)
     RISK_FREE_DAILY = 0.000378
     TRADING_DAYS = 252
-    
+
     print("Aggregating Volatility and Returns (DuckDB)...")
-    
+
     # Volatility & Returns
     # Filter for last 12 months relative to the max date in DB (or per fund?)
     # Let's take the global max date to define "current"
     max_date = conn.execute("SELECT MAX(date) FROM fund_returns").fetchone()[0]
-    cutoff_date = max_date - timedelta(days=365)
-    
-    conn.execute(f"DROP TABLE IF EXISTS fund_metrics")
-    
+    cutoff_date = max_date - pd.Timedelta(days=365)
+
+    conn.execute("DROP TABLE IF EXISTS fund_metrics")
+
     query_metrics = f"""
         CREATE TABLE fund_metrics AS
         WITH filtered AS (
@@ -106,15 +107,15 @@ def calculate_metrics():
         FROM stats
     """
     conn.execute(query_metrics)
-    
+
     # 5. Calculate Beta (Requires joining with Benchmark)
-    # Since DuckDB correlation might be tricky with different calendars, 
+    # Since DuckDB correlation might be tricky with different calendars,
     # we'll do a Python join for the funds that passed the filter.
-    # For 60k funds, this Python loop might be slow. 
+    # For 60k funds, this Python loop might be slow.
     # Optimized approach: Groupby Apply in Pandas on the filtered set.
-    
+
     print("Calculating Beta and Correlation (Pandas)...")
-    
+
     # Get daily returns for funds that are in our metrics table
     funds_subset_query = f"""
         SELECT r.fund_uuid, r.date, r.daily_return
@@ -123,34 +124,37 @@ def calculate_metrics():
         WHERE r.date >= '{cutoff_date}'
     """
     funds_df = conn.execute(funds_subset_query).fetchdf()
-    funds_df['date'] = pd.to_datetime(funds_df['date'])
-    
+    funds_df["date"] = pd.to_datetime(funds_df["date"])
+
     # Merge with Benchmark
-    merged = pd.merge(funds_df, bench_df, on='date', how='inner')
-    
+    # merged = pd.merge(funds_df, bench_df, on="date", how="inner")
+
     # Function to calc beta/corr
     def calc_risk_metrics(g):
-        if len(g) < 50: return pd.Series({'beta': None, 'correlation': None})
-        cov = np.cov(g['daily_return'], g['market_return'])[0][1]
-        var_market = np.var(g['market_return'])
+        if len(g) < 50:
+            return pd.Series({"beta": None, "correlation": None})
+        cov = np.cov(g["daily_return"], g["market_return"])[0][1]
+        var_market = np.var(g["market_return"])
         beta = cov / var_market if var_market != 0 else 0
-        corr = g['daily_return'].corr(g['market_return'])
-        return pd.Series({'beta': beta, 'correlation': corr})
+        corr = g["daily_return"].corr(g["market_return"])
+        return pd.Series({"beta": beta, "correlation": corr})
 
-    risk_metrics = merged.groupby('fund_uuid').apply(calc_risk_metrics).reset_index()
-    
+    # risk_metrics = merged.groupby("fund_uuid").apply(calc_risk_metrics).reset_index()
+
     # 6. Update Metrics Table with Python results
     # Create temp table for risk metrics
-    conn.execute("CREATE TEMP TABLE risk_metrics_py (fund_uuid VARCHAR, beta DOUBLE, correlation DOUBLE)")
+    conn.execute(
+        "CREATE TEMP TABLE risk_metrics_py (fund_uuid VARCHAR, beta DOUBLE, correlation DOUBLE)"
+    )
     conn.execute("INSERT INTO risk_metrics_py SELECT * FROM risk_metrics")
-    
+
     # Add columns to main table
     try:
         conn.execute("ALTER TABLE fund_metrics ADD COLUMN beta DOUBLE")
         conn.execute("ALTER TABLE fund_metrics ADD COLUMN correlation DOUBLE")
-    except:
-        pass # columns might exist
-        
+    except Exception:
+        pass  # columns might exist
+
     # Update
     conn.execute("""
         UPDATE fund_metrics
@@ -158,21 +162,21 @@ def calculate_metrics():
         FROM risk_metrics_py r
         WHERE fund_metrics.fund_uuid = r.fund_uuid
     """)
-    
+
     # 7. Final Review
     print("\n--- Metrics Calculation Complete ---")
-    summary = conn.execute("SELECT * FROM fund_metrics ORDER BY sharpe_ratio DESC LIMIT 5").fetchdf()
-    pd.set_option('display.max_columns', None)
+    summary = conn.execute(
+        "SELECT * FROM fund_metrics ORDER BY sharpe_ratio DESC LIMIT 5"
+    ).fetchdf()
+    pd.set_option("display.max_columns", None)
     print(summary)
-    
+
     count = conn.execute("SELECT COUNT(*) FROM fund_metrics").fetchone()[0]
     print(f"Calculated metrics for {count} funds.")
-    
+
     conn.execute("DETACH benchmarks_db")
     conn.close()
 
-from datetime import timedelta
 
 if __name__ == "__main__":
     calculate_metrics()
-

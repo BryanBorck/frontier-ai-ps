@@ -6,6 +6,7 @@ import mlflow
 from src.tools.tool_parse_query.index import _FundQueryParserInternal
 from src.tools.tool_search_db.index import _FundSearchInternal
 from src.tools.tool_semantic_search.index import _FundSemanticSearchInternal
+from src.tools.tool_web_search.index import _WebSearchInternal
 
 
 class FundSearchOrchestrator:
@@ -52,11 +53,17 @@ class FundSearchOrchestrator:
         parser = _FundQueryParserInternal()
         searcher = _FundSearchInternal()
         semantic_searcher = _FundSemanticSearchInternal()
+        web_searcher = _WebSearchInternal()
 
         # Create ReAct agent with tools
         self.agent = dspy.ReAct(
             signature="question -> answer",
-            tools=[parser.parse, searcher.search, semantic_searcher.search_semantic],
+            tools=[
+                parser.parse,
+                searcher.search_db,
+                semantic_searcher.search_semantic,
+                web_searcher.web_search,
+            ],
             max_iters=5,
         )
 

@@ -58,8 +58,8 @@ class _FundSearchInternal:
     Use tool_search_db() for the standard tool interface.
     """
 
-    def search(self, criteria: FundSearchCriteria, limit: int = 10) -> list[FundResult]:
-        """Search for funds and return FundResult objects.
+    def search_db(self, criteria: FundSearchCriteria, limit: int = 10) -> list[FundResult]:
+        """Search for funds in the database and return FundResult objects.
 
         Args:
             criteria: FundSearchCriteria object with search parameters
