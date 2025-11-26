@@ -7,7 +7,7 @@
 
 **An Agentic AI system for discovering and analyzing Brazilian Investment Funds.**
 
-This project uses **DSPy** to orchestrate a deterministic agent that can query massive quantitative datasets (DuckDB) and qualitative documents (Vector Store) to answer complex financial queries with precision.
+This project uses **DSPy** to orchestrate a deterministic agent that can query massive quantitative datasets (DuckDB) and qualitative documents (Vector Store) about brazilian funds to answer queries with some precision.
 
 ## ⚠️ Important: Data Requirements
 
@@ -25,7 +25,6 @@ This project relies on large local datasets that are **not included in git** due
 ## Core Technologies
 
 - **[DSPy](https://github.com/stanfordnlp/dspy):** We use DSPy modules and signatures instead of brittle prompt engineering. This allows the agent to self-optimize and learn from examples.
-- **[DuckDB](https://duckdb.org/):** A high-performance in-process SQL OLAP database. We use it to store and query millions of fund snapshots and position records with sub-second latency.
 - **[MLflow](https://mlflow.org/):** Used for **LLM Tracing**. Every step (intent, extraction, search) is logged as a span, allowing full observability into the agent's "thought process".
 
 ## Project Structure
