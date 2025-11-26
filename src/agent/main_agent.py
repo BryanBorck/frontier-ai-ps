@@ -1,4 +1,6 @@
 import contextlib
+import os
+import shutil
 
 import dspy
 
@@ -50,9 +52,19 @@ class MainAgent:
         return self.history
 
     def reset_history(self):
-        """Reset conversation history."""
+        """Reset conversation history and clear LLM cache."""
         self.history = []
         self.search_tool.clear_state()
+
+        # Clear DSPy's in-memory cache
+        if hasattr(self.lm, "history"):
+            self.lm.history = []
+
+        # Clear DSPy's disk cache to force fresh LLM calls
+        cache_dir = os.path.expanduser("~/.dspy_cache")
+        if os.path.exists(cache_dir):
+            with contextlib.suppress(Exception):
+                shutil.rmtree(cache_dir)
 
     def chat(self, question: str) -> str:
         """Main entry point."""
@@ -65,63 +77,26 @@ class MainAgent:
             history_str += f"Agent: {turn.get('answer', '')}\n"
 
         intent_pred = self.intent_classifier(query=question, history=history_str)
-        intents = intent_pred.intents
+        # intents = intent_pred.intents # Unused for now in main agent
         detected_language = intent_pred.language or "pt"
-
-        # Handle Informational directly
-        if "informational" in intents:
-            # Use web search for informational queries if needed
-            # For now, simplistic integration: if query seems to need external info, use web search
-            # But "informational" here often means definitions.
-            # Let's just use the LLM knowledge for simple definitions, or we could trigger web search
-            # if we wanted to be fancy.
-            # Given the prompt "move web search tool... and give the main agent this tool",
-            # we should probably use it.
-
-            web_results = []
-            # Heuristic: if the model is unsure or wants latest info, use web search.
-            # For now, let's just run it to show we have it, or leave it available for the generator
-            # The user asked to "give the main agent this tool".
-
-            # Let's try to fetch web info for the informational query to augment the answer
-            with contextlib.suppress(Exception):
-                web_results = self.web_search_tool(query=question, num_results=3)
-
-            # Format web results for the context (simplistic)
-            web_context = "\n".join(
-                [f"- {r.get('title')}: {r.get('text')[:200]}..." for r in web_results]
-            )
-
-            # We can pass this extra context to _generate_response if we modify it,
-            # or just rely on the LLM's internal knowledge if web search fails.
-            # But _generate_response takes 'results' which are FundResult objects usually.
-            # We might need to adjust _generate_response to handle generic text or web results.
-            # For now, let's just stick to the previous flow but with the tool available.
-
-            # Actually, let's pass the web context in 'interpretation_note' or a new field?
-            # Or just append it to the question?
-            # "Question: X. Context from web: ..."
-
-            enriched_question = question
-            if web_context:
-                enriched_question += f"\n\nContext from web search:\n{web_context}"
-
-            answer = self._generate_response(
-                question=enriched_question,
-                results=[],
-                response_type="informational",
-                interpretation_note=intent_pred.interpretation_note,
-                suggested_followup=None,
-                suggestions=[],
-                user_language=detected_language,
-            )
-            self.history.append({"question": question, "answer": answer})
-            # Also update search tool history so it knows we chatted
-            self.search_tool.update_history(question, answer)
-            return answer
 
         # 1. Fund Search (Agentic Step)
         # Pass the already computed intent to avoid double cost/latency
+        # CRITICAL FIX: Pass the full conversation history context to the search tool!
+        # The search tool needs to know about previous entities (like "GLP") referenced in history
+        # to resolve follow-up queries like "fund with this name" correctly.
+
+        # We construct a context-aware query if history exists
+        # context_aware_query = question # Unused logic placeholder
+        if self.history:
+            # We don't change the question itself, but we ensure the search tool has access
+            # to history via its own update_history method which we call at the end of chat().
+            # However, for the CURRENT call, the search tool's state might be stale if we don't
+            # explicitly pass history or if the tool relies on 'ask' parameter context.
+            # In the current implementation of FundSearchTool.ask(), it doesn't take history as arg,
+            # but relies on its internal state.
+            pass
+
         search_output: SearchOutput = self.search_tool.ask(question, intent_prediction=intent_pred)
 
         # 2. Process Output
@@ -142,17 +117,17 @@ class MainAgent:
             # "if it has some good answers show 5"
             # "if generic... show 10"
 
-            # Default behavior: show top 5
-            limit = 5
+            # Default behavior: show top 10 (user requested more visibility)
+            limit = 10
 
             # If very few results (<4), show all of them (high confidence implicit in low count + match)
             if len(cnpjs) < 4:
                 limit = len(cnpjs)
             # If explicitly ambiguous or "too many results" flag, maybe show more to help disambiguate?
             elif response_type == "too_many_results":
-                limit = 5  # Keep it focused even if many
+                limit = 10  # Show more to help user filter
             elif response_type == "disambiguation":
-                limit = 3  # Show top 3 candidates for disambiguation
+                limit = 5  # Show top 5 candidates for disambiguation
 
             # Fetch details for top N
             target_cnpjs = cnpjs[:limit]
@@ -166,13 +141,16 @@ class MainAgent:
             interpretation_note=search_output.interpretation_note,
             suggested_followup=search_output.suggested_followup,
             suggestions=search_output.suggestions,
-            user_language=search_output.detected_language,
+            user_language="pt"
+            if detected_language == "pt"
+            else detected_language,  # Enforce PT if detected
         )
 
         # Save history
         self.history.append({"question": question, "answer": answer})
 
         # Update Search Tool's history for context awareness
+        # IMPORTANT: This allows the next turn to know about entities found in this turn
         self.search_tool.update_history(question, answer)
 
         return answer

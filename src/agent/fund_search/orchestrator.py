@@ -1,3 +1,7 @@
+import contextlib
+import os
+import shutil
+
 import dspy
 
 from src.agent.fund_search.models.output import SearchOutput
@@ -85,7 +89,10 @@ class FundSearchTool:
         # Pass a simplified history string to the classifier
         # Format: "User: ... \n Agent: ..."
         history_str = ""
-        for turn in self.state.history[-3:]:  # Last 3 turns context
+        # FIX: Ensure we use the FULL available history, not just internal state if passed externally?
+        # For now, internal state is updated via update_history() called by MainAgent.
+        # Ensure we pass enough context (last 5 turns) for long context references like "glp funds"
+        for turn in self.state.history[-5:]:
             history_str += f"User: {turn.get('question', '')}\n"
             history_str += f"Agent: {turn.get('answer', '')}\n"
 
@@ -132,11 +139,17 @@ class FundSearchTool:
             "CriteriaExtraction",
             {"query": question, "intents": intents, "search_query": search_query},
         ) as span:
+            # Pass history to extractor as well if needed?
+            # Currently extractor signature doesn't take history.
+            # But the 'query' input can be enriched with history if needed.
+            # However, IntentClassifier should have already resolved references in 'search_query'.
+            # If search_query is "fund with name GLP" because IntentClassifier resolved it, then Extractor is fine.
+
             extractor_pred = self.extractor(
                 query=question,
                 intents=intents,
                 language=detected_language,
-                search_query=search_query,
+                search_query=search_query,  # Use the resolved search query from intent classifier
                 required_name_terms=required_name_terms,
             )
             parsed_query = extractor_pred.parsed_query
@@ -263,7 +276,18 @@ class FundSearchTool:
         )
 
     def clear_state(self):
+        """Clear conversation state and LLM cache."""
         self.state.clear()
+
+        # Clear DSPy's in-memory cache
+        if hasattr(self.lm, "history"):
+            self.lm.history = []
+
+        # Clear DSPy's disk cache to force fresh LLM calls
+        cache_dir = os.path.expanduser("~/.dspy_cache")
+        if os.path.exists(cache_dir):
+            with contextlib.suppress(Exception):
+                shutil.rmtree(cache_dir)
 
     def update_history(self, question: str, answer: str):
         """Update internal history with the final Q&A pair."""

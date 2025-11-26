@@ -53,7 +53,7 @@ class ResponseGenerator(dspy.Module):
 
         summary = f"Found {len(results)} results.\n"
 
-        for i, item in enumerate(results[:20]):  # Limit context window usage
+        for i, item in enumerate(results[:20]):  # Limit context window usage (was 20, keeping it to support higher limits)
             summary += f"{i + 1}. {item.legal_name} (CNPJ: {item.cnpj})\n"
             if item.investment_class:
                 summary += f"   Class: {item.investment_class}\n"

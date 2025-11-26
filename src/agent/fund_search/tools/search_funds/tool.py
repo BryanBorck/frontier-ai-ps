@@ -47,7 +47,7 @@ class FundSearchTool(dspy.Module):
                     if normalized_key and normalized_key in self.entity_map:
                         entity_data = self.entity_map[normalized_key]
                         # Collect all CNPJs for this entity across all roles
-                        for role in ["MANAGER", "ADMINISTRATOR", "CUSTODIAN"]:
+                        for role in ["MANAGER"]:
                             if role in entity_data:
                                 for ent in entity_data[role]:
                                     if "tax_id" in ent:
@@ -62,16 +62,42 @@ class FundSearchTool(dspy.Module):
             # 3. Combine Name and Entity Logic
             if entity_cnpjs and name_clause:
                 cnpj_list_str = "', '".join(entity_cnpjs)
-                provider_clause = (
-                    f"len(list_filter(service_providers, x -> x.tax_id IN ('{cnpj_list_str}'))) > 0"
-                )
+                # Ensure we only match if they are the MANAGER
+                provider_clause = f"len(list_filter(service_providers, x -> x.tax_id IN ('{cnpj_list_str}') AND x.type = 'MANAGER')) > 0"
                 conditions.append(f"({name_clause} AND {provider_clause})")
 
             elif entity_cnpjs:
                 cnpj_list_str = "', '".join(entity_cnpjs)
                 conditions.append(
-                    f"len(list_filter(service_providers, x -> x.tax_id IN ('{cnpj_list_str}'))) > 0"
+                    f"len(list_filter(service_providers, x -> x.tax_id IN ('{cnpj_list_str}') AND x.type = 'MANAGER')) > 0"
                 )
+
+            # Fallback: If searching by service provider but no entity map match found
+            # Use the provided name as a text search against manager names or legal name
+            elif criteria.service_provider_entity and not entity_cnpjs:
+                # We interpret this as: User wants funds managed by "NAME", but we couldn't resolve "NAME" to a CNPJ.
+                # So we search for "NAME" inside the service_providers JSON string (specifically matching manager pattern if possible,
+                # but simple text search is safer for robustness).
+
+                # Construct OR clauses for each unmapped entity
+                fallback_clauses = []
+                for entity_name in criteria.service_provider_entity:
+                    # Clean the name for safe SQL insertion
+                    safe_name = entity_name.replace("'", "''")
+
+                    # Search in service_providers (as manager) OR in fund legal_name
+                    # Note: searching raw JSON string is a bit hacky but works for text match
+                    fallback_clauses.append(f"""(
+                        CAST(service_providers AS VARCHAR) ILIKE '%{safe_name}%' 
+                        OR legal_name ILIKE '%{safe_name}%'
+                    )""")
+
+                if fallback_clauses:
+                    fallback_condition = " OR ".join(fallback_clauses)
+                    if name_clause:
+                        conditions.append(f"({name_clause} AND ({fallback_condition}))")
+                    else:
+                        conditions.append(f"({fallback_condition})")
 
             elif name_clause:
                 conditions.append(f"""(

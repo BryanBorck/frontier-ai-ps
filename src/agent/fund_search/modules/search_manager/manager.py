@@ -38,9 +38,7 @@ class SearchRouter:
         self.normalizer = normalizer
         self.tracer = tracer
 
-    def execute(
-        self, parsed: ParsedQuery, context_cnpjs: list[str] | None = None
-    ) -> list[str]:
+    def execute(self, parsed: ParsedQuery, context_cnpjs: list[str] | None = None) -> list[str]:
         """
         Execute search based on INTENTS in parsed query.
         Returns a merged list of CNPJs.
@@ -108,7 +106,7 @@ class SearchRouter:
                 # but usually structured search is an "AND" filter on top of context if context exists.
                 # However, the tools are independent. We'll intersect later.
                 # BUT, if we have context_cnpjs (e.g. "from these..."), we should pass it.
-                
+
                 criteria_cnpjs = self._call_fund_tool(
                     fund_criteria, cnpjs=context_cnpjs, limit=structured_limit, reason="criteria"
                 )
@@ -120,7 +118,7 @@ class SearchRouter:
                 companies=parsed.companies,  # Simplified: only company names
                 asset_type=parsed.asset_type,
             )
-            
+
             # Use context if available to limit search scope
             exposure_cnpjs = self._call_position_tool(
                 position_criteria, context_cnpjs, structured_limit, "exposure"
@@ -145,34 +143,28 @@ class SearchRouter:
         # But if we have distinct searches (e.g. "funds by name OR strategy"), the tools handle that internally.
         # Different steps usually imply AND logic (e.g. "Itau funds" (Structured) AND "Top 10 returns" (Numeric)).
         # However, Semantic + Structured might be fuzzy.
-        
+
         # If we have NO results from tools, but we had context, maybe return context?
         # No, if intents were detected, we expect filtering.
-        
+
         if not results_lists:
-             # If no search performed but context exists, maybe return context?
-             # Depends on caller. If intent was "show me", but no specific search triggered?
-             return context_cnpjs if context_cnpjs else []
+            # If no search performed but context exists, maybe return context?
+            # Depends on caller. If intent was "show me", but no specific search triggered?
+            return context_cnpjs if context_cnpjs else []
 
         # Intersect all result lists
         # Start with the first list
         final_set = set(results_lists[0])
         for res_list in results_lists[1:]:
             final_set.intersection_update(res_list)
-            
+
         # Preserve order from the first list (primary relevance)
         final_list = [c for c in results_lists[0] if c in final_set]
-        
+
         return final_list
 
     def _normalize_query(self, parsed: ParsedQuery) -> None:
         """Normalize query entities."""
-        if parsed.companies:
-            normalized_companies = []
-            for raw_name in parsed.companies:
-                norm_result = self.normalizer(query_text=raw_name, entity_type="ASSET")
-                normalized_companies.append(norm_result.normalized_name or raw_name)
-            parsed.companies = normalized_companies
 
         if parsed.service_provider_entity:
             normalized_providers = []
@@ -241,9 +233,7 @@ class SearchRouter:
                 "reason": reason,
             },
         ) as span:
-            results = self.snapshot_tool(
-                numeric_filter=numeric_filter, cnpjs=cnpjs, limit=limit
-            )
+            results = self.snapshot_tool(numeric_filter=numeric_filter, cnpjs=cnpjs, limit=limit)
             span.set_outputs({"result_count": len(results), "cnpjs": results[:5]})
             return results
 
@@ -271,7 +261,9 @@ class SearchRouter:
             span.set_outputs({"result_count": len(results), "cnpjs": results[:5]})
             return results
 
-    def _call_performance_tool(self, numeric_filter, cnpjs: list[str] | None, limit: int, reason: str) -> list[str]:
+    def _call_performance_tool(
+        self, numeric_filter, cnpjs: list[str] | None, limit: int, reason: str
+    ) -> list[str]:
         with self.tracer.tool_call(
             "PerformanceSearchTool",
             {
