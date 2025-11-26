@@ -4,7 +4,6 @@ import os
 import dspy
 import duckdb
 
-from src.agent.fund_search.models.fund import FundResult
 from src.agent.fund_search.models.query import FundSearchCriteria
 from src.agent.fund_search.utils.mappings import EntityMapper
 

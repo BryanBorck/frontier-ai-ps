@@ -3,8 +3,9 @@
 For full schema documentation, see README.md in this directory.
 """
 
-import duckdb
 from pathlib import Path
+
+import duckdb
 
 
 class BRFundsDBAdapter:

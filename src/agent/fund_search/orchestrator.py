@@ -1,8 +1,5 @@
-import os
-
 import dspy
 
-import mlflow
 from src.agent.fund_search.models.output import SearchOutput
 from src.agent.fund_search.models.state import ConversationState
 from src.agent.fund_search.modules.extraction import SpecializedExtractor
@@ -10,6 +7,7 @@ from src.agent.fund_search.modules.intent import IntentClassifier
 from src.agent.fund_search.modules.manager import ConversationManager
 from src.agent.fund_search.modules.search_manager.manager import SearchManager
 from src.agent.fund_search.utils.tracing import TracingManager
+from src.infrastructure.logging.config import setup_mlflow
 
 
 class FundSearchTool:
@@ -34,12 +32,7 @@ class FundSearchTool:
 
         # 2. Setup MLflow Tracing
         if enable_mlflow:
-            tracking_uri = mlflow_tracking_uri or os.getenv(
-                "MLFLOW_TRACKING_URI", "http://127.0.0.1:5001"
-            )
-            mlflow.set_tracking_uri(tracking_uri)
-            mlflow.set_experiment(mlflow_experiment_name)
-            mlflow.openai.autolog()
+            setup_mlflow(experiment_name=mlflow_experiment_name, tracking_uri=mlflow_tracking_uri)
 
         # 3. Initialize Tracing Manager
         self.tracer = TracingManager(enabled=enable_mlflow)

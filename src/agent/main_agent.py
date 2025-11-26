@@ -1,3 +1,5 @@
+import contextlib
+
 import dspy
 
 from src.agent.fund_details.tool import FundDetailsTool
@@ -5,6 +7,7 @@ from src.agent.fund_search.models.output import SearchOutput
 from src.agent.fund_search.modules.intent import IntentClassifier
 from src.agent.fund_search.orchestrator import FundSearchTool
 from src.agent.response.generator import ResponseGenerator
+from src.agent.web_search.tool import WebSearchTool
 
 
 class MainAgent:
@@ -33,6 +36,7 @@ class MainAgent:
         )
 
         self.details_tool = FundDetailsTool()
+        self.web_search_tool = WebSearchTool()
         self.response_generator = ResponseGenerator()
 
         # Classifier for MainAgent to decide flow
@@ -66,8 +70,44 @@ class MainAgent:
 
         # Handle Informational directly
         if "informational" in intents:
+            # Use web search for informational queries if needed
+            # For now, simplistic integration: if query seems to need external info, use web search
+            # But "informational" here often means definitions.
+            # Let's just use the LLM knowledge for simple definitions, or we could trigger web search
+            # if we wanted to be fancy.
+            # Given the prompt "move web search tool... and give the main agent this tool",
+            # we should probably use it.
+
+            web_results = []
+            # Heuristic: if the model is unsure or wants latest info, use web search.
+            # For now, let's just run it to show we have it, or leave it available for the generator
+            # The user asked to "give the main agent this tool".
+
+            # Let's try to fetch web info for the informational query to augment the answer
+            with contextlib.suppress(Exception):
+                web_results = self.web_search_tool(query=question, num_results=3)
+
+            # Format web results for the context (simplistic)
+            web_context = "\n".join(
+                [f"- {r.get('title')}: {r.get('text')[:200]}..." for r in web_results]
+            )
+
+            # We can pass this extra context to _generate_response if we modify it,
+            # or just rely on the LLM's internal knowledge if web search fails.
+            # But _generate_response takes 'results' which are FundResult objects usually.
+            # We might need to adjust _generate_response to handle generic text or web results.
+            # For now, let's just stick to the previous flow but with the tool available.
+
+            # Actually, let's pass the web context in 'interpretation_note' or a new field?
+            # Or just append it to the question?
+            # "Question: X. Context from web: ..."
+
+            enriched_question = question
+            if web_context:
+                enriched_question += f"\n\nContext from web search:\n{web_context}"
+
             answer = self._generate_response(
-                question=question,
+                question=enriched_question,
                 results=[],
                 response_type="informational",
                 interpretation_note=intent_pred.interpretation_note,
