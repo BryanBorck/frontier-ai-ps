@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from src.agent.orchestrator import FundSearchOrchestrator
+from src.agent.main_agent import MainAgent
 from src.utils.env import EnvValidationError, validate_env
 
 # Load environment variables
@@ -46,16 +46,13 @@ def ask(
             else "FundSearch-DSPy"
         )
 
-        agent = FundSearchOrchestrator(
+        agent = MainAgent(
             api_key=api_key,
             model=model,
-            enable_mlflow=enable_mlflow,
-            mlflow_tracking_uri=mlflow_tracking_uri,
-            mlflow_experiment_name=mlflow_experiment_name,
         )
 
         with console.status("[bold green]Thinking...", spinner="dots"):
-            answer = agent.ask(question, use_history=False)
+            answer = agent.chat(question)
 
         console.print(Panel(answer, title="[bold blue]Answer", border_style="blue"))
 
@@ -99,12 +96,9 @@ def chat(
         if enable_mlflow and not mlflow_tracking_uri and "MLFLOW_TRACKING_URI" in os.environ:
             del os.environ["MLFLOW_TRACKING_URI"]
 
-        agent = FundSearchOrchestrator(
+        agent = MainAgent(
             api_key=api_key,
             model=model,
-            enable_mlflow=enable_mlflow,
-            mlflow_tracking_uri=mlflow_tracking_uri,
-            mlflow_experiment_name=mlflow_experiment_name,
         )
         console.print(
             Panel(
@@ -158,7 +152,7 @@ def chat(
         raise typer.Exit(1) from None
 
 
-def display_history(agent: FundSearchOrchestrator):
+def display_history(agent: MainAgent):
     """Display the conversation history in a formatted table."""
     history = agent.get_history()
 

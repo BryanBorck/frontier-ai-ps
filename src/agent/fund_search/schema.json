@@ -1,0 +1,51 @@
+{
+  "name": "fund_search",
+  "description": "Agentic workflow for searching investment funds based on criteria, names, or semantic queries. It handles intent classification, extraction, and orchestrates multiple sub-tools (Semantic, Structured, Position, etc.).",
+  "input": {
+    "type": "object",
+    "properties": {
+      "question": {
+        "type": "string",
+        "description": "The user's natural language query about funds."
+      },
+      "context_cnpjs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Optional list of CNPJs to filter the search (e.g., from previous conversation context)."
+      }
+    },
+    "required": [
+      "question"
+    ]
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "cnpjs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of discovered CNPJs matching the query."
+      },
+      "response_type": {
+        "type": "string",
+        "description": "Classification of the result (e.g., 'single_match', 'list_results', 'no_results')."
+      },
+      "interpretation_note": {
+        "type": "string",
+        "description": "Explanation of how the query was interpreted."
+      },
+      "suggestions": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Suggested follow-up questions or options."
+      }
+    }
+  }
+}
+

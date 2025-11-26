@@ -1,0 +1,47 @@
+{
+  "name": "fund_details",
+  "description": "Retrieves detailed information (Name, Class, Type, AUM, etc.) for a specific list of funds identified by their CNPJs.",
+  "input": {
+    "type": "object",
+    "properties": {
+      "cnpjs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of CNPJs to fetch details for."
+      }
+    },
+    "required": [
+      "cnpjs"
+    ]
+  },
+  "output": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "fund_id": {
+          "type": "string"
+        },
+        "cnpj": {
+          "type": "string"
+        },
+        "legal_name": {
+          "type": "string"
+        },
+        "fund_type": {
+          "type": "string"
+        },
+        "investment_class": {
+          "type": "string"
+        },
+        "aum": {
+          "type": "number"
+        }
+      }
+    },
+    "description": "List of FundResult objects containing detailed fund information."
+  }
+}
+
