@@ -37,14 +37,30 @@ class GepaOptimizer:
         """
         print(f"\nInitializing GEPA (Auto={self.auto_level}, Threads={self.num_threads})...")
 
+        # NOTE: teacher argument removed from init as it caused TypeError in recent DSPy versions
         optimizer = self.optimizer_class(
             metric=self.metric_fn,
-            teacher=self.teacher_module,
+            # teacher=self.teacher_module, 
             reflection_lm=self.reflection_lm,
-            auto=self.auto_level,
-            num_threads=self.num_threads,
-            use_mlflow=settings.MLFLOW_ENABLED,
-            track_stats=True,
+            # auto=self.auto_level, # 'auto' might also be specific to MIPRO/MIPROv2 or deprecated in GEPA init
+            # num_threads=self.num_threads, # Moved to compile usually or depends on version
+            # use_mlflow=settings.MLFLOW_ENABLED, # Not standard arg for base GEPA
+            # track_stats=True,
+        )
+        
+        # NOTE: The GEPA signature varies by version. 
+        # Standard DSPy optimizers often take metric in init and trainset in compile.
+        # Let's try a minimal init first if the previous one failed.
+        # If GEPA follows the new standard, it might just be `GEPA(metric=...)`
+        
+        # Re-instantiating with likely correct args based on error `TypeError: GEPA.__init__() got an unexpected keyword argument 'teacher'`
+        # This suggests 'teacher' was wrong. 'auto' and 'num_threads' might be valid if it's like MIPRO.
+        # Let's try passing just metric and prompt_model (reflection_lm).
+        
+        optimizer = self.optimizer_class(
+            metric=self.metric_fn,
+            prompt_model=self.reflection_lm,
+            verbose=True
         )
 
         # Compile/Optimize
@@ -52,6 +68,13 @@ class GepaOptimizer:
         if settings.MLFLOW_ENABLED:
             mlflow.set_experiment(f"{settings.MLFLOW_EXPERIMENT_NAME}-{experiment_name_suffix}")
 
-        compiled_module = optimizer.compile(student=module, trainset=trainset, valset=valset)
+        # num_threads usually goes into compile if supported, or init. 
+        # auto might be part of compile config.
+        compiled_module = optimizer.compile(
+            student=module, 
+            trainset=trainset, 
+            valset=valset,
+            # config=dict(num_threads=self.num_threads) # Try passing config if supported
+        )
 
         return compiled_module

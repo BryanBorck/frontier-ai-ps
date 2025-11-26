@@ -1,7 +1,7 @@
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, List, Optional
 
 import dspy
 from src.evaluation.config import settings
@@ -9,121 +9,117 @@ from src.evaluation.config import settings
 @dataclass
 class FundSearchExample:
     """Single evaluation example for fund search."""
+    id: int
     query: str
-    expected_criteria: dict
-    expected_fund_cnpjs: list[str] | None = None
-    description: str = ""
-    category: str = ""
-    eval_category: str = ""
-    validation_type: str = ""
+    expected_intents: List[str]
+    expected_extraction: dict
+    expected_response_type: str
+    evaluation_type: str
+    why_tricky: str
+    tier: int
+    category: str
+    
+    # Optional fields
+    ground_truth_cnpjs: Optional[List[str]] = None
+    ground_truth_note: Optional[str] = None
+    must_include_any: Optional[bool] = None
+    min_results: Optional[int] = None
+    expected_language: Optional[str] = None
+    expected_search_query_contains: Optional[List[str]] = None
+    expected_required_name_terms: Optional[List[str]] = None
+    expected_ambiguous: Optional[bool] = None
+    expected_context_status: Optional[str] = None
+    history_context: Optional[str] = None
 
-def load_examples_from_jsonl(data_dir: Path | None = None) -> list[FundSearchExample]:
-    """Load examples from JSONL files in the data directory."""
-    if data_dir is None:
-        data_dir = Path(settings.DATA_DIR)
+    # Legacy fields mapping (computed property or just ignored)
+    @property
+    def expected_criteria(self) -> dict:
+        return self.expected_extraction
 
+def load_main_dataset() -> List[FundSearchExample]:
+    """Load the main 300-query evaluation dataset."""
+    data_path = Path(settings.DATA_DIR) / "fund_search_evaluation_300.jsonl"
+    if not data_path.exists():
+        raise FileNotFoundError(f"Main dataset not found at {data_path}")
+        
     examples = []
-    # Recursively find all .jsonl files
-    jsonl_files = sorted(data_dir.rglob("*.jsonl"))
-
-    for jsonl_file in jsonl_files:
-        with open(jsonl_file) as f:
-            for line_num, line in enumerate(f, 1):
-                line = line.strip()
-                if not line:
-                    continue
-                try:
-                    data = json.loads(line)
-                    example = FundSearchExample(
-                        query=data["query"],
-                        expected_criteria=data["expected_criteria"],
-                        expected_fund_cnpjs=data.get("expected_fund_cnpjs"),
-                        description=data.get("description", ""),
-                        category=data.get("category", ""),
-                        eval_category=data.get("eval_category", ""),
-                        validation_type=data.get("validation_type", ""),
-                    )
-                    examples.append(example)
-                except (json.JSONDecodeError, KeyError) as e:
-                    print(f"Warning: Error parsing {jsonl_file}:{line_num} - {e}")
-                    continue
+    with open(data_path) as f:
+        for line_num, line in enumerate(f, 1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                data = json.loads(line)
+                example = FundSearchExample(
+                    id=data.get("id", line_num),
+                    query=data["query"],
+                    expected_intents=data.get("expected_intents", []),
+                    expected_extraction=data.get("expected_extraction", {}),
+                    expected_response_type=data.get("expected_response_type", ""),
+                    evaluation_type=data.get("evaluation_type", ""),
+                    why_tricky=data.get("why_tricky", ""),
+                    tier=data.get("tier", 0),
+                    category=data.get("category", ""),
+                    
+                    ground_truth_cnpjs=data.get("ground_truth_cnpjs"),
+                    ground_truth_note=data.get("ground_truth_note"),
+                    must_include_any=data.get("must_include_any"),
+                    min_results=data.get("min_results"),
+                    expected_language=data.get("expected_language"),
+                    expected_search_query_contains=data.get("expected_search_query_contains"),
+                    expected_required_name_terms=data.get("expected_required_name_terms"),
+                    expected_ambiguous=data.get("expected_ambiguous"),
+                    expected_context_status=data.get("expected_context_status"),
+                    history_context=data.get("history_context")
+                )
+                examples.append(example)
+            except (json.JSONDecodeError, KeyError) as e:
+                print(f"Warning: Error parsing {data_path}:{line_num} - {e}")
+                continue
     return examples
-
-def get_current_schema_examples() -> list[FundSearchExample]:
-    """Load examples that work with current schema."""
-    data_dir = Path(settings.DATA_DIR) / "_current_schema"
-    return load_examples_from_jsonl(data_dir)
 
 def get_intent_examples(train_ratio: float = 0.8) -> tuple[list[dspy.Example], list[dspy.Example]]:
     """
-    Get examples suitable for IntentClassifier optimization.
-    Derives expected intents from category or eval_category if not explicitly present.
+    Get examples suitable for IntentClassifier optimization using the main dataset.
     """
-    examples = get_current_schema_examples()
+    examples = load_main_dataset()
     dspy_examples = []
     
     for ex in examples:
-        intents = []
+        # Filter out examples that are purely informational or greetings if we want to focus on search
+        # But 'informational' is a valid intent, so we keep it.
         
-        # Heuristic mapping based on evaluation categories
-        # See src/agent/fund_search/signatures/intent.py for valid intents
-        
-        # 1. find_by_name / find_by_strategy (Semantic Search)
-        if ex.category == "basic_company" or "single_company" in str(ex.eval_category):
-             intents = ["find_by_strategy"] # Company names often need semantic strategy search ("funds from Itau")
-        elif "exact_match" in str(ex.eval_category):
-             intents = ["find_by_name"] # Specific fund name
-
-        # 2. find_by_criteria (Structured DB Search)
-        elif "criteria" in str(ex.eval_category) or "single_" in str(ex.eval_category):
-             # single_asset_class, single_geographic, dual_criteria -> find_by_criteria
-             # EXCEPT if it's about holdings (exposure)
-             intents = ["find_by_criteria"]
-        
-        # 3. ranking_sorting
-        elif "ranking" in str(ex.eval_category):
-            # "top 10 funds" -> has_numeric_filter + find_by_criteria?
-            # Or just find_by_criteria with sort?
-            # The intent classifier usually outputs 'has_numeric_filter' for "top N"
-            intents = ["has_numeric_filter", "find_by_criteria"]
-
-        # 4. browse_general
-        elif "browse" in str(ex.eval_category):
-            intents = ["general_browse"]
-
-        # Fallback based on criteria presence
-        if not intents:
-             if ex.expected_criteria and any(ex.expected_criteria.values()):
-                 intents = ["find_by_criteria"]
-             else:
-                 intents = ["informational"] 
-
         dspy_ex = dspy.Example(
             query=ex.query,
-            expected_intents=intents
+            expected_intents=ex.expected_intents
         ).with_inputs("query")
         dspy_examples.append(dspy_ex)
 
+    # Simple deterministic split
     split_idx = int(len(dspy_examples) * train_ratio)
     return dspy_examples[:split_idx], dspy_examples[split_idx:]
 
 def get_extractor_examples(train_ratio: float = 0.8) -> tuple[list[dspy.Example], list[dspy.Example]]:
     """
-    Get examples suitable for SpecializedExtractor optimization.
-    Only includes examples relevant for extraction (find_by_criteria).
+    Get examples suitable for SpecializedExtractor optimization using the main dataset.
     """
-    examples = get_current_schema_examples()
+    examples = load_main_dataset()
     dspy_examples = []
     
     for ex in examples:
-        # Skip examples that have no expected criteria (e.g. pure semantic search)
-        if not ex.expected_criteria and not ex.expected_fund_cnpjs:
+        # Only use examples where extraction is the primary evaluation type OR we have expected extraction data
+        if not ex.expected_extraction and ex.evaluation_type != "extraction_match":
             continue
+            
+        if not ex.expected_extraction:
+            # Skip empty extractions if we are training extractor? 
+            # Maybe we want to train it to extract nothing for vague queries?
+            # For now, let's include empty extractions as valid negative examples
+            pass
 
-        # Extractor needs the query and the expected structured criteria
         dspy_ex = dspy.Example(
             query=ex.query,
-            expected_criteria=ex.expected_criteria
+            expected_criteria=ex.expected_extraction
         ).with_inputs("query")
         dspy_examples.append(dspy_ex)
 

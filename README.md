@@ -1,223 +1,94 @@
-# DSPy Agent CLI
+# Frontier AI Fund Search
 
-A command-line interface for interacting with DSPy agents with conversation history management. This project uses [uv](https://github.com/astral-sh/uv) for fast Python package management and [DSPy](https://github.com/stanfordnlp/dspy) for building language model programs.
+![Python](https://img.shields.io/badge/python-3.12+-blue.svg)
+![DSPy](https://img.shields.io/badge/DSPy-Framework-orange.svg)
+![DuckDB](https://img.shields.io/badge/DuckDB-OLAP-yellow.svg)
+![MLflow](https://img.shields.io/badge/MLflow-Tracing-blueviolet.svg)
 
-## Features
+**An Agentic AI system for discovering and analyzing Brazilian Investment Funds.**
 
-- **Conversation History**: Maintains context across chat sessions using DSPy's History utility
-- **Interactive Chat Mode**: Have natural conversations with the agent
-- **Single-Question Mode**: Ask one-off questions without history
-- **Rich Terminal UI**: Beautiful interface with tables, panels, and syntax highlighting
-- **Flexible Model Support**: Works with OpenAI and other LiteLLM-supported models
-- **History Commands**: View and manage conversation history in real-time
-- **Environment-based Configuration**: Easy setup with .env files
-- **MLflow Integration**: Optional tracing and evaluation of agent interactions
+This project uses **DSPy** to orchestrate a deterministic agent that can query massive quantitative datasets (DuckDB) and qualitative documents (Vector Store) to answer complex financial queries with precision.
 
-## Prerequisites
+## ⚠️ Important: Data Requirements
 
-- Python 3.13+
-- uv package manager
-- API key for Gemini (default) or OpenAI
+This project relies on large local datasets that are **not included in git** due to size. You must populate the `src/infrastructure/database/` directory before running the agent.
 
-## Installation
+| File/Directory      | Description                                                                              | Source                                                |
+| ------------------- | ---------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| **`br_funds.db`**   | **Primary Database.** DuckDB file containing 67k+ funds, daily snapshots, and positions. | Generated via `ingest_cvm.py` from CVM Open Data.     |
+| **`extracted/`**    | Directory containing JSONL files for entity resolution (Managers, Custodians).           | Extracted from CVM data for fast fuzzy matching.      |
+| **`vector_store/`** | Local directory storing vector embeddings for semantic search.                           | Generated via `build_embeddings.py` from PDF Lâminas. |
+| **`mlflow.db`**     | SQLite database for tracing agent runs.                                                  | Created automatically by `start_mlflow.sh`.           |
 
-1. Clone the repository:
+> **Note:** Without `br_funds.db`, the agent cannot perform any quantitative searches (returns, fees, holdings).
 
-```bash
-git clone <your-repo-url>
-cd frontier-ai-ps
-```
+## Core Technologies
 
-2. Install dependencies using uv:
-
-```bash
-uv sync
-```
-
-3. Set up your environment variables:
-
-```bash
-cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY
-```
-
-## Usage
-
-The CLI provides three main commands:
-
-### Ask a single question
-
-Ask a one-off question without conversation history:
-
-```bash
-uv run dspy-agent ask "What is the capital of France?"
-```
-
-With a custom model:
-
-```bash
-# Using OpenAI
-uv run dspy-agent ask "What is the capital of France?" --model openai/gpt-4o
-
-# Using Gemini 1.5 Pro
-uv run dspy-agent ask "What is the capital of France?" --model gemini/gemini-1.5-pro
-```
-
-### Interactive chat mode with conversation history
-
-Start a conversational session where the agent remembers context:
-
-```bash
-uv run dspy-agent chat
-```
-
-This starts an interactive session with conversation history management. The agent will remember all previous questions and answers in the session.
-
-**Available commands in chat mode:**
-
-- `history` - View the full conversation history in a formatted table
-- `clear` - Reset the conversation history
-- `exit`, `quit`, or `q` - End the session
-
-**Example conversation:**
-
-```
-You: What is the capital of France?
-Agent: The capital of France is Paris.
-
-You: What is its population?
-Agent: Paris has a population of approximately 2.1 million people in the city proper...
-
-You: history
-# Shows a table of all questions and answers
-
-You: clear
-Conversation history cleared!
-```
-
-View history at the end of session:
-
-```bash
-uv run dspy-agent chat --show-history
-```
-
-### Check version
-
-```bash
-uv run dspy-agent version
-```
-
-### MLflow Integration (Optional)
-
-To enable tracing and evaluation with MLflow:
-
-1. Start the MLflow server:
-
-```bash
-./scripts/start_mlflow.sh
-```
-
-2. Run commands with MLflow enabled:
-
-```bash
-# Ask with MLflow tracing
-uv run dspy-agent ask "Find funds managed by BTG Pactual" --mlflow
-
-# Chat with MLflow tracing
-uv run dspy-agent chat --mlflow
-```
-
-3. View traces in the MLflow UI at `http://127.0.0.1:5001`
-
-For more details, see [MLflow Integration Guide](docs/mlflow-integration.md) and [scripts/README.md](scripts/README.md).
-
-## Configuration
-
-### Environment Variables
-
-Set these in your `.env` file:
-
-1. **API Keys**:
-
-   - `OPENAI_API_KEY`: Your OpenAI API key
-
-2. **MLflow Settings** (optional):
-   - `MLFLOW_ENABLED`: Set to `true` to enable MLflow tracing
-   - `MLFLOW_TRACKING_URI`: MLflow server URL (e.g., `http://127.0.0.1:5001`)
-   - `MLFLOW_EXPERIMENT_NAME`: Name for your MLflow experiment (defaults to `FundSearch-DSPy`)
-
-### Command-line Options
-
-- `--model` / `-m`: Specify the model to use (defaults to `gpt-4.1-mini`)
-- `--api-key`: Provide API key directly (overrides environment variable)
-- `--show-history`: (chat mode only) Show conversation history when exiting
-- `--mlflow` / `--no-mlflow`: Enable or disable MLflow tracing
-
-### Supported Models
-
-The CLI uses OpenAI models. Common options:
-
-- `gpt-4.1-mini` (default, fast and economical)
-- `gpt-4o` (most capable)
-- `gpt-4-turbo`
-
-## How It Works
-
-This CLI uses DSPy's conversation history management feature (`dspy.History`) to maintain context across chat sessions. Here's how it works:
-
-1. **History Tracking**: Each question and answer is stored in a `dspy.History` object
-2. **Context Awareness**: When you ask a follow-up question, the agent sees the full conversation history
-3. **Smart Prompting**: DSPy formats the history as multi-turn messages for optimal model performance
-4. **Flexible Modes**:
-   - `ask` command: No history (good for one-off questions)
-   - `chat` command: Full history (great for conversations)
+- **[DSPy](https://github.com/stanfordnlp/dspy):** We use DSPy modules and signatures instead of brittle prompt engineering. This allows the agent to self-optimize and learn from examples.
+- **[DuckDB](https://duckdb.org/):** A high-performance in-process SQL OLAP database. We use it to store and query millions of fund snapshots and position records with sub-second latency.
+- **[MLflow](https://mlflow.org/):** Used for **LLM Tracing**. Every step (intent, extraction, search) is logged as a span, allowing full observability into the agent's "thought process".
 
 ## Project Structure
 
 ```
-.
+frontier-ai-ps/
 ├── src/
-│   ├── agent/                    # Agent orchestration
-│   │   └── orchestrator.py      # ReAct-based fund search orchestrator
-│   ├── cli/                     # CLI interface
-│   │   ├── __init__.py
-│   │   └── main.py              # CLI commands (ask, chat)
-│   ├── tools/                   # DSPy tools
-│   │   ├── tool_parse_query/    # Query parsing tool
-│   │   └── tool_search_db/      # Database search tool
-│   ├── infrastructure/          # Infrastructure code
-│   │   ├── database/            # Database adapters and utilities
-│   │   └── ingestion/           # Data ingestion scripts
-│   ├── evaluation/              # Evaluation and optimization
-│   │   ├── evaluate.py          # Evaluation scripts
-│   │   └── optimize.py          # DSPy optimization
-│   └── mlflow/                  # MLflow tracking data
-│       ├── mlflow.db            # MLflow database
-│       ├── mlruns/              # MLflow runs
-│       └── mlartifacts/         # MLflow artifacts
-├── scripts/                     # Helper scripts
-│   ├── start_mlflow.sh          # Start MLflow server
-│   └── README.md                # Scripts documentation
-├── docs/                        # Documentation
-│   └── mlflow-integration.md    # MLflow guide
-├── pyproject.toml               # Project configuration
-└── README.md
+│   ├── agent/
+│   │   ├── fund_search/          # Core Search Agent
+│   │   │   ├── orchestrator.py   # Main coordination logic
+│   │   │   ├── modules/          # DSPy Modules (Intent, Extraction)
+│   │   │   └── tools/            # Specialized Tools
+│   │   └── main_agent.py         # Top-level Agent (Chat & History)
+│   ├── infrastructure/
+│   │   ├── database/             # DuckDB adapters & schema
+│   │   └── ingestion/            # Scripts to load CVM data
+│   └── evaluation/               # DSPy Optimizers & Metrics
+├── docs/                         # Architecture & Design Docs
+└── scripts/                      # Helper scripts (start_mlflow.sh)
 ```
 
-## Development
+## Fund Search Tools
 
-This project uses uv for dependency management. To add new dependencies:
+The `FundSearchTool` delegates to specialized sub-tools for safety and precision:
+
+| Tool                   | Purpose                                          | Source                        |
+| ---------------------- | ------------------------------------------------ | ----------------------------- |
+| **search_funds**       | Metadata filtering (Manager, CNPJ, Type, Status) | `funds` table                 |
+| **search_performance** | Returns, Volatility, Sharpe Ratio                | `fund_performance_indicators` |
+| **search_positions**   | Asset holdings (Stock, Bond, Debenture lookups)  | `positions` table             |
+| **search_snapshots**   | Daily PL, Quota, Captação (Flows)                | `fund_snapshots` table        |
+| **search_semantic**    | Qualitative search (Strategy, Objective, Risk)   | Vector Store (Lâminas)        |
+
+## Quick Start
+
+### 1. Installation
 
 ```bash
-uv add <package-name>
+# Clone
+git clone https://github.com/your-org/frontier-ai-ps.git
+cd frontier-ai-ps
+
+# Install dependencies with uv
+uv sync
 ```
 
-To run the CLI in development mode:
+### 2. Configure
+
+Copy `.env.example` to `.env` and add your `OPENAI_API_KEY`.
+
+### 3. Run
 
 ```bash
-uv run dspy-agent
+# Interactive Chat
+uv run dspy-agent chat
+
+# Single Query
+uv run dspy-agent ask "give me bradesco gold fund"
 ```
 
-## License
+## Documentation
 
-MIT
+- **[Architecture](docs/architecture.md)**
+- **[Agent Workflow](docs/agent_workflow.md)**
+- **[Data Pipeline](docs/data_pipeline.md)**
+- **[MLflow Integration](docs/mlflow-integration.md)**

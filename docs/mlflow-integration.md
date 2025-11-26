@@ -5,254 +5,85 @@ This guide explains how to use MLflow for tracing and evaluating your DSPy agent
 ## Overview
 
 MLflow provides:
-
-- **Tracing**: Automatic logging of all agent interactions, tool calls, and LLM requests
-- **Evaluation**: Track performance metrics across different runs
-- **Visualization**: Interactive UI to explore agent behavior and debug issues
+- **Tracing**: Automatic logging of all agent interactions, tool calls, and LLM requests.
+- **Evaluation**: Track performance metrics across different runs.
+- **Visualization**: Interactive UI to explore agent behavior and debug issues.
 
 ## Setup
 
-### 1. Install Dependencies
+### 1. Start MLflow Server
 
-MLflow is already included in the project dependencies. Install it with:
-
-```bash
-uv sync
-```
-
-### 2. Start MLflow Server
-
-MLflow requires a tracking server to store traces. Start it with:
+MLflow requires a tracking server to store traces. We recommend using a persistent backend like SQLite for local development.
 
 ```bash
-# Using SQLite backend (recommended for local development)
-mlflow server --backend-store-uri sqlite:///src/mlflow/mlflow.db --default-artifact-root ./src/mlflow/mlartifacts --port 5001
+# Start the server using the provided script
+./scripts/start_mlflow.sh
 ```
 
-The server will be available at `http://127.0.0.1:5001`
+This starts the server at `http://127.0.0.1:5001` with a SQLite backend located at `src/infrastructure/mlflow/mlflow.db`.
 
-**Note**: It's highly recommended to use a SQL store (SQLite or PostgreSQL) when using MLflow tracing, as it provides better performance and reliability than the default file store.
+### 2. Configure Environment
 
-### 3. Configure Environment Variables
-
-Copy `.env.example` to `.env` and update the MLflow settings:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
+Ensure your `.env` file has the following configurations:
 
 ```env
 # MLflow Configuration
 MLFLOW_ENABLED=true
 MLFLOW_TRACKING_URI=http://127.0.0.1:5001
-MLFLOW_EXPERIMENT_NAME=FundSearch-DSPy
+MLFLOW_EXPERIMENT_NAME=FundSearch-Agent
 ```
 
 ## Usage
 
-### Basic Usage with MLflow
+### Using the CLI
 
-```python
-import os
-from dotenv import load_dotenv
-from src.agent.orchestrator import FundSearchOrchestrator
-
-# Load environment variables
-load_dotenv()
-
-# Initialize orchestrator with MLflow enabled
-orchestrator = FundSearchOrchestrator(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    model="gpt-4.1-mini",
-    enable_mlflow=True,
-    mlflow_tracking_uri=os.getenv("MLFLOW_TRACKING_URI"),
-    mlflow_experiment_name=os.getenv("MLFLOW_EXPERIMENT_NAME"),
-)
-
-# Use the agent - traces will be automatically logged
-answer = orchestrator.ask("Find sustainable energy funds with high ESG ratings")
-print(answer)
-```
-
-### Programmatic Configuration
-
-You can also configure MLflow directly in code:
-
-```python
-from src.agent.orchestrator import FundSearchOrchestrator
-
-orchestrator = FundSearchOrchestrator(
-    api_key="your-api-key",
-    enable_mlflow=True,
-    mlflow_tracking_uri="http://127.0.0.1:5001",
-    mlflow_experiment_name="FundSearch-DSPy",
-)
-```
-
-## Viewing Traces in MLflow UI
-
-### 1. Access the UI
-
-Open your browser and navigate to:
-
-```
-http://127.0.0.1:5001
-```
-
-### 2. Select Your Experiment
-
-- Click on "Experiments" in the left sidebar
-- Select your experiment (e.g., "FundSearch-DSPy")
-
-### 3. View Traces
-
-- Click on the "Traces" tab
-- You'll see a list of all agent executions with timestamps
-
-### 4. Inspect Individual Traces
-
-Click on any trace to see:
-
-- **Input/Output**: The question asked and the answer generated
-- **Tool Calls**: All tool invocations (parse_query, search_db)
-- **LLM Calls**: Model inputs, outputs, and configurations
-- **Execution Time**: How long each step took
-- **Token Usage**: Tokens consumed by each LLM call
-
-## What Gets Traced
-
-MLflow automatically captures:
-
-1. **Agent Predictions**
-
-   - Input questions
-   - Final answers
-   - Full execution trajectory
-
-2. **Tool Invocations**
-
-   - Tool name
-   - Input parameters
-   - Output results
-
-3. **LLM Calls**
-
-   - Model name and configuration
-   - Prompt sent to the model
-   - Model response
-   - Token usage
-   - Latency
-
-4. **Metadata**
-   - Timestamp
-   - Experiment name
-   - Run ID
-
-## Debugging with MLflow
-
-### Example: Debugging Poor Results
-
-If your agent gives incorrect answers:
-
-1. Open the trace in MLflow UI
-2. Inspect the tool outputs:
-   - Did the query parser extract the right parameters?
-   - Did the search return relevant results?
-3. Check LLM inputs:
-   - Is the context provided to the model sufficient?
-   - Are the tool results formatted correctly?
-4. Review the reasoning chain:
-   - How many iterations did the agent take?
-   - What was the thought process at each step?
-
-### Example Trace Navigation
-
-```
-Trace View
-├── Input: "Find sustainable energy funds"
-├── Step 1: parse_query
-│   ├── Input: {"query": "sustainable energy funds"}
-│   └── Output: {"investment_type": "fund", "sustainability": true, ...}
-├── Step 2: search_db
-│   ├── Input: {"investment_type": "fund", "sustainability": true}
-│   └── Output: [{"name": "Green Energy Fund", ...}, ...]
-├── Step 3: LLM Final Response
-│   ├── Context: [tool results]
-│   └── Output: "Here are the sustainable energy funds..."
-└── Final Answer: "Here are the sustainable energy funds..."
-```
-
-## Advanced Features
-
-### Multiple Experiments
-
-Organize traces by use case:
-
-```python
-# Development experiment
-dev_orchestrator = FundSearchOrchestrator(
-    api_key=api_key,
-    enable_mlflow=True,
-    mlflow_experiment_name="FundSearch-Dev",
-)
-
-# Production experiment
-prod_orchestrator = FundSearchOrchestrator(
-    api_key=api_key,
-    enable_mlflow=True,
-    mlflow_experiment_name="FundSearch-Prod",
-)
-```
-
-### Evaluation Metrics
-
-MLflow can track custom metrics across runs. You can extend the orchestrator to log:
-
-- Accuracy
-- Response time
-- User satisfaction scores
-- Tool usage patterns
-
-## Troubleshooting
-
-### MLflow Server Not Running
-
-**Error**: `ConnectionError: Cannot connect to MLflow tracking server`
-
-**Solution**: Ensure the MLflow server is running:
+The easiest way to use MLflow is via the CLI with the `--mlflow` flag.
 
 ```bash
-mlflow server --backend-store-uri sqlite:///src/mlflow/mlflow.db --default-artifact-root ./src/mlflow/mlartifacts --port 5001
+# Chat mode with tracing enabled
+uv run dspy-agent chat --mlflow
+
+# Single question with tracing
+uv run dspy-agent ask "Find high-yield funds" --mlflow
 ```
 
-### Traces Not Appearing
+### Programmatic Usage
 
-**Checklist**:
+If you are using the `FundSearchTool` directly in your code:
 
-1. Is `enable_mlflow=True` in the orchestrator initialization?
-2. Is the MLflow tracking URI correct?
-3. Is the MLflow server running and accessible?
-4. Check the server logs for errors
+```python
+from src.agent.fund_search.orchestrator import FundSearchTool
 
-### Wrong Experiment
+# Initialize tool with MLflow enabled
+tool = FundSearchTool(
+    api_key="...",
+    enable_mlflow=True,
+    mlflow_tracking_uri="http://127.0.0.1:5001",
+    mlflow_experiment_name="FundSearch-Agent"
+)
 
-If traces appear in the wrong experiment:
+# Traces will be automatically logged
+result = tool.ask("Find funds managed by Kinea")
+```
 
-1. Check the `mlflow_experiment_name` parameter
-2. MLflow creates new experiments automatically if they don't exist
+## Viewing Traces
 
-## Best Practices
+1. Open `http://127.0.0.1:5001` in your browser.
+2. Select the **FundSearch-Agent** experiment.
+3. Click on the **Traces** tab.
+4. Click on a trace ID to view the full execution tree:
+   - **Root Span**: Total latency and final output.
+   - **IntentClassification**: How the agent understood the query.
+   - **CriteriaExtraction**: Extracted parameters.
+   - **SearchExecution**: Database queries and results.
 
-1. **Use SQL Backend**: Always use SQLite or PostgreSQL for the MLflow backend when using tracing
-2. **Separate Experiments**: Use different experiments for dev, staging, and production
-3. **Regular Review**: Periodically review traces to identify common failure patterns
-4. **Clean Up**: Archive old experiments to keep the UI performant
-5. **Secure Access**: In production, add authentication to your MLflow server
+## Debugging Tips
 
-## Resources
+If the agent returns "No results":
+1. Check the **CriteriaExtraction** span. Did it extract the correct filters?
+2. Check the **SearchExecution** span. Did the SQL query look correct?
+3. Check the **IntentClassification**. Was the query ambiguous?
 
-- [MLflow Documentation](https://mlflow.org/docs/latest/index.html)
-- [DSPy + MLflow Tutorial](https://dspy.ai/tutorials/observability/#tracing)
-- [MLflow Tracing Guide](https://mlflow.org/docs/latest/llms/tracing/index.html)
+## Storage Warning
+
+The MLflow database and artifacts can grow large. They are stored in `src/infrastructure/mlflow/` and should generally be ignored by git (added to `.gitignore`).
