@@ -22,7 +22,6 @@ class TestBasicCriteria:
             (["FII"], 2),  # XP Malls and BTG Logística
             (["FI"], 1),  # Itaú Ações
             (["FII", "FI"], 3),  # All active funds
-            (["NONEXISTENT"], 0),  # Invalid type
         ],
     )
     def test_search_by_fund_type_parametrized(self, test_db_with_funds, fund_type, expected_count):
@@ -34,12 +33,20 @@ class TestBasicCriteria:
 
         assert len(results) == expected_count
 
+    def test_invalid_fund_type_rejected(self, test_db_with_funds):
+        """Test that invalid fund types are rejected by Pydantic."""
+        from pydantic import ValidationError
+
+        # Pydantic should reject invalid fund type
+        with pytest.raises(ValidationError):
+            _ = FundSearchCriteria(fund_type=["NONEXISTENT"])
+
     @pytest.mark.parametrize(
         "investment_class,expected_cnpj",
         [
-            (["Fundos Imobiliários"], "12.345.678/0001-90"),
+            (["FII"], "12.345.678/0001-90"),
             (["Ações"], "11.222.333/0001-44"),
-            (["Fundos Imobiliários", "Ações"], None),  # Multiple should return multiple
+            (["FII", "Ações"], None),  # Multiple should return multiple
         ],
     )
     def test_search_by_investment_class(self, test_db_with_funds, investment_class, expected_cnpj):
@@ -74,9 +81,9 @@ class TestBasicCriteria:
     @pytest.mark.parametrize(
         "manager_type,expected_count",
         [
-            (["INDEPENDENT"], 3),  # All test funds
-            (["CORPORATE"], 0),
-            (["INDEPENDENT", "CORPORATE"], 3),
+            (["CORPORATE"], 3),  # All test funds
+            (["INDIVIDUAL"], 0),
+            (["CORPORATE", "INDIVIDUAL"], 3),
         ],
     )
     def test_search_by_manager_type(self, test_db_with_funds, manager_type, expected_count):
@@ -224,7 +231,7 @@ class TestCombinedCriteria:
     def test_fund_type_and_investment_class(self, test_db_with_funds):
         """Test combining fund_type and investment_class."""
         tool = FundSearchTool(db_path=test_db_with_funds)
-        criteria = FundSearchCriteria(fund_type=["FII"], investment_class=["Fundos Imobiliários"])
+        criteria = FundSearchCriteria(fund_type=["FII"], investment_class=["FII"])
 
         results = tool.forward(criteria=criteria)
 
@@ -247,7 +254,7 @@ class TestCombinedCriteria:
         tool = FundSearchTool(db_path=test_db_with_funds)
         criteria = FundSearchCriteria(
             fund_type=["FII"],
-            investment_class=["Fundos Imobiliários"],
+            investment_class=["FII"],
             target_audience=["QUALIFIED"],
         )
 
@@ -272,9 +279,9 @@ class TestCombinedCriteria:
         tool = FundSearchTool(db_path=test_db_with_funds)
         criteria = FundSearchCriteria(
             fund_type=["FII"],
-            investment_class=["Fundos Imobiliários"],
+            investment_class=["FII"],
             target_audience=["RETAIL"],
-            manager_type=["INDEPENDENT"],
+            manager_type=["CORPORATE"],
             fund_of_funds=False,
             is_exclusive_fund=False,
             can_invest_abroad_100_pct=False,
@@ -656,17 +663,15 @@ class TestErrorHandling:
         assert len(results) <= 999999999
 
     def test_empty_string_in_criteria(self, test_db_with_funds):
-        """Test with empty strings in criteria."""
-        tool = FundSearchTool(db_path=test_db_with_funds)
-        criteria = FundSearchCriteria(
-            fund_type=[""],  # Empty string
-            investment_class=[""],
-        )
+        """Test with empty strings in criteria - should be rejected by Pydantic."""
+        from pydantic import ValidationError
 
-        # Should handle gracefully, likely return no results
-        results = tool.forward(criteria=criteria)
-
-        assert isinstance(results, list)
+        # Pydantic should reject empty strings in literal fields
+        with pytest.raises(ValidationError):
+            _ = FundSearchCriteria(
+                fund_type=[""],  # Empty string - invalid literal
+                investment_class=[""],
+            )
 
     def test_none_as_name_parameter(self, test_db_with_funds):
         """Test with None as name parameter."""
@@ -750,18 +755,15 @@ class TestErrorHandling:
             pass
 
     def test_multiple_errors_combined(self, tmp_path):
-        """Test multiple error conditions at once."""
-        # Invalid DB + bad criteria
-        tool = FundSearchTool(db_path="/nonexistent/db.duckdb")
-        criteria = FundSearchCriteria(
-            fund_type=["'; DROP TABLE funds; --"],  # SQL injection
-            investment_class=None,
-        )
+        """Test that Pydantic rejects SQL injection attempts in criteria."""
+        from pydantic import ValidationError
 
-        # Should return empty list, not crash
-        results = tool.forward(criteria=criteria, name="'; DELETE FROM funds; --", limit=-1)
-
-        assert results == []
+        # Pydantic should reject SQL injection string in criteria
+        with pytest.raises(ValidationError):
+            _ = FundSearchCriteria(
+                fund_type=["'; DROP TABLE funds; --"],  # SQL injection - invalid literal
+                investment_class=None,
+            )
 
     def test_database_read_only_mode(self, test_db_with_funds):
         """Test that database is opened in read-only mode."""
@@ -861,7 +863,7 @@ class TestErrorHandling:
                 NULL,  -- NULL investment_class
                 'RETAIL',
                 'ACTIVE',
-                'INDEPENDENT',
+                'CORPORATE',
                 [{'type': 'CNPJ', 'value': '12.345.678/0001-90'}],
                 [],  -- Empty service_providers
                 {'value': 1000000.0, 'currency': 'BRL'},
@@ -908,10 +910,10 @@ class TestErrorHandling:
             INSERT INTO funds VALUES (
                 'Fund with Bad CNPJ',
                 'FII',
-                'Fundos Imobiliários',
+                'FII',
                 'RETAIL',
                 'ACTIVE',
-                'INDEPENDENT',
+                'CORPORATE',
                 [{'type': 'CNPJ', 'value': ''}],  -- Empty CNPJ
                 [],
                 {'value': 1000000.0, 'currency': 'BRL'},
@@ -967,18 +969,16 @@ class TestSQLInjectionPrevention:
         assert len(normal_results) > 0  # DB still intact
 
     def test_sql_injection_in_criteria(self, test_db_with_funds):
-        """Test SQL injection attempts in criteria fields."""
+        """Test that SQL injection attempts in criteria are rejected by Pydantic."""
+        from pydantic import ValidationError
+
         tool = FundSearchTool(db_path=test_db_with_funds)
 
-        # Try SQL injection in fund_type
-        criteria = FundSearchCriteria(fund_type=["'; DROP TABLE funds; --"])
+        # Pydantic should reject SQL injection string as invalid literal
+        with pytest.raises(ValidationError):
+            _ = FundSearchCriteria(fund_type=["'; DROP TABLE funds; --"])
 
-        results = tool.forward(criteria=criteria)
-
-        # Should safely return empty results
-        assert isinstance(results, list)
-
-        # Verify DB still works
+        # Verify DB still works after attempted injection
         normal_results = tool.forward(criteria=FundSearchCriteria(fund_type=["FII"]))
         assert len(normal_results) > 0
 

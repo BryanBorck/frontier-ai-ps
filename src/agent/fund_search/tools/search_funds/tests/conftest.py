@@ -1,7 +1,27 @@
 """Fixtures for search_funds tool tests."""
 
+import os
+import shutil
+
 import duckdb
 import pytest
+
+
+@pytest.fixture(scope="session")
+def real_db_path():
+    """Path to the real production database."""
+    return "src/infrastructure/database/br_funds.db"
+
+
+@pytest.fixture
+def db_snapshot(tmp_path, real_db_path):
+    """Create a temporary copy of the real database for integration tests."""
+    if not os.path.exists(real_db_path):
+        pytest.skip(f"Real database not found at {real_db_path}")
+
+    snapshot = tmp_path / "snapshot_br_funds.db"
+    shutil.copy(real_db_path, snapshot)
+    return str(snapshot)
 
 
 @pytest.fixture
@@ -34,10 +54,10 @@ def test_db_with_funds(tmp_path):
         INSERT INTO funds VALUES (
             'XP Malls FII',
             'FII',
-            'Fundos Imobiliários',
+            'FII',
             'RETAIL',
             'ACTIVE',
-            'INDEPENDENT',
+            'CORPORATE',
             false,
             false,
             false,
@@ -49,10 +69,10 @@ def test_db_with_funds(tmp_path):
         (
             'BTG Pactual Logística FII',
             'FII',
-            'Fundos Imobiliários',
+            'FII',
             'QUALIFIED',
             'ACTIVE',
-            'INDEPENDENT',
+            'CORPORATE',
             false,
             false,
             false,
@@ -67,7 +87,7 @@ def test_db_with_funds(tmp_path):
             'Ações',
             'QUALIFIED',
             'ACTIVE',
-            'INDEPENDENT',
+            'CORPORATE',
             false,
             false,
             false,
@@ -82,7 +102,7 @@ def test_db_with_funds(tmp_path):
             'Renda Fixa',
             'RETAIL',
             'CANCELLED',
-            'INDEPENDENT',
+            'CORPORATE',
             false,
             false,
             false,
