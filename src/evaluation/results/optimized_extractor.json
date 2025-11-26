@@ -1,0 +1,142 @@
+{
+  "extractor.extract_criteria.predict": {
+    "traces": [],
+    "train": [],
+    "demos": [],
+    "signature": {
+      "instructions": "Extract filter criteria ONLY when EXPLICITLY mentioned by user.\n\nCRITICAL: Return None for any field NOT explicitly mentioned.\nDo NOT infer or assume default values!\n\nExamples:\n- \"FIP funds\" → fund_type=[\"FIP\"], everything else=None\n- \"funds for qualified investors\" → target_audience=[\"QUALIFIED\"], everything else=None\n- \"multimercado funds\" → investment_class=[\"Multimercado\"], everything else=None\n- \"bradesco gold fund\" → everything=None (this is a name/strategy search, not criteria)",
+      "fields": [
+        {
+          "prefix": "Query:",
+          "description": "User query containing categorical filters"
+        },
+        {
+          "prefix": "Reasoning: Let's think step by step in order to",
+          "description": "${reasoning}"
+        },
+        {
+          "prefix": "Fund Type:",
+          "description": "ONLY extract if user explicitly mentions fund type (FI, FIP, FIDC, FII, ETF).\n        Return None if not mentioned."
+        },
+        {
+          "prefix": "Investment Class:",
+          "description": "ONLY extract if user explicitly mentions investment class.\n        Return None if not mentioned."
+        },
+        {
+          "prefix": "Target Audience:",
+          "description": "ONLY if user mentions investor type (qualified, professional, retail).\n        Return None if not mentioned."
+        },
+        {
+          "prefix": "Service Provider Entity:",
+          "description": "Extract manager/admin name if explicitly mentioned in the query.\n        Examples:\n        - \"bradesco gold fund\" → [\"Bradesco\"]\n        - \"safra funds\" → [\"Safra\"]\n        - \"itau tech\" → [\"Itau\"]"
+        },
+        {
+          "prefix": "Fund Of Funds:",
+          "description": "True ONLY if user explicitly mentions 'fund of funds', 'FIC', or 'FoF'. Otherwise None."
+        },
+        {
+          "prefix": "Manager Type:",
+          "description": "ONLY extract if user explicitly asks for corporate vs individual managers.\n        Return None if not mentioned."
+        },
+        {
+          "prefix": "Is Exclusive Fund:",
+          "description": "True ONLY if user explicitly mentions 'exclusive' or 'restricted' funds. Otherwise None."
+        },
+        {
+          "prefix": "Can Invest Abroad 100 Pct:",
+          "description": "True ONLY if user mentions investing 100% abroad. Otherwise None."
+        },
+        {
+          "prefix": "Has Long Term Taxation:",
+          "description": "True ONLY if user mentions long-term taxation benefits. Otherwise None."
+        }
+      ]
+    },
+    "lm": null
+  },
+  "extractor.extract_exposure.predict": {
+    "traces": [],
+    "train": [],
+    "demos": [],
+    "signature": {
+      "instructions": "Extract asset exposure criteria for finding funds that HOLD specific assets.\n\nExamples:\n- \"funds holding Petrobras\" → asset_name=[\"Petrobras\"], asset_tickers=[\"PETR3\", \"PETR4\"]\n- \"exposure to Vale\" → asset_name=[\"Vale\"], asset_tickers=[\"VALE3\"]\n- \"funds with NVDA\" → asset_tickers=[\"NVDA34\", \"NVDA\"]",
+      "fields": [
+        {
+          "prefix": "Query:",
+          "description": "User query asking about asset holdings"
+        },
+        {
+          "prefix": "Reasoning: Let's think step by step in order to",
+          "description": "${reasoning}"
+        },
+        {
+          "prefix": "Asset Name:",
+          "description": "List of company or asset names (e.g., ['Petrobras', 'Vale'])"
+        },
+        {
+          "prefix": "Asset Tickers:",
+          "description": "Specific tickers if mentioned or INFERRED from common stocks (e.g., PETR4, VALE3)"
+        },
+        {
+          "prefix": "Asset Type:",
+          "description": "Type of asset held by the fund.\n        - EQUITY: Stocks, Shares\n        - FIXED_INCOME: Bonds, Debentures\n        - INVESTMENT_FUND: Fund quotas\n        - DERIVATIVES: Options, Futures\n        - CASH: Cash, Equivalents\n        "
+        }
+      ]
+    },
+    "lm": null
+  },
+  "extractor.extract_numeric.predict": {
+    "traces": [],
+    "train": [],
+    "demos": [],
+    "signature": {
+      "instructions": "Extract numeric filter from natural language query.\nHandles Portuguese and English, various expressions.",
+      "fields": [
+        {
+          "prefix": "Query:",
+          "description": "Natural language query in Portuguese or English"
+        },
+        {
+          "prefix": "Reasoning: Let's think step by step in order to",
+          "description": "${reasoning}"
+        },
+        {
+          "prefix": "Metric:",
+          "description": "What metric the user is filtering by"
+        },
+        {
+          "prefix": "Operator:",
+          "description": "Normalized operator:\n        - min: at least, pelo menos, greater than, maior que\n        - max: at most, less than, menor que\n        - around: approximately, cerca de\n        - top: top N, maiores\n        - range: between X and Y\n        - exact: exactly\n        "
+        },
+        {
+          "prefix": "Value:",
+          "description": "Primary numeric value (normalized to base units, e.g., 200M → 200000000)"
+        },
+        {
+          "prefix": "Max Value:",
+          "description": "Second value for range operator (between X and Y)"
+        },
+        {
+          "prefix": "Top N:",
+          "description": "N for 'top N' queries, default 10 if not specified"
+        },
+        {
+          "prefix": "Benchmark Name:",
+          "description": "Benchmark name for comparison (e.g. IBOVESPA, CDI, SELIC)."
+        },
+        {
+          "prefix": "Performance Period:",
+          "description": "Period for performance comparison/filtering. Default to '12m' if implied."
+        }
+      ]
+    },
+    "lm": null
+  },
+  "metadata": {
+    "dependency_versions": {
+      "python": "3.13",
+      "dspy": "3.0.4",
+      "cloudpickle": "3.1"
+    }
+  }
+}

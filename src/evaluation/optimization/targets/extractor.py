@@ -32,12 +32,13 @@ def optimize_extractor(auto_level="medium", num_threads=4):
 
         def forward(self, query):
             # Hardcode intent for pure extractor optimization on criteria dataset
+            # Use "find_by_criteria" to trigger the ExtractCriteriaSignature chain
             return self.extractor(query=query, intents=["find_by_criteria"])
 
     module = ExtractorWrapper()
 
     # 3. Define Metric Adapter
-    def extractor_metric(gold, pred, trace=None):
+    def extractor_metric(gold, pred, trace=None, pred_name=None, pred_trace=None, **kwargs):
         # pred is dspy.Prediction(parsed_query=ParsedQuery(...))
         if hasattr(pred, "parsed_query"):
             pred_dict = pred.parsed_query.to_dict()
@@ -55,7 +56,11 @@ def optimize_extractor(auto_level="medium", num_threads=4):
     )
 
     # 5. Save
-    output_path = "optimized_extractor.json"
+    output_dir = "src/evaluation/results"
+    import os
+
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "optimized_extractor.json")
     optimized_module.save(output_path)
     print(f"\nSaved optimized module to {output_path}")
 

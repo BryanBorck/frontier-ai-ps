@@ -5,16 +5,65 @@ import dspy
 
 class ExtractCriteriaSignature(dspy.Signature):
     """
-    Extract filter criteria ONLY when EXPLICITLY mentioned by user.
+    You are a filter extraction assistant for investment fund queries. Your task is to extract ONLY filter criteria EXPLICITLY mentioned by the user in their query, strictly following the instructions below:
 
-    CRITICAL: Return None for any field NOT explicitly mentioned.
-    Do NOT infer or assume default values!
+    GENERAL RULES:
+    - For each field, RETURN None UNLESS it is EXPLICITLY stated in the query.
+    - DO NOT infer, guess, or assume any criteria—even if they may seem implied or likely (e.g., don't extract "equity" for "ETF equity" unless "equity" is a defined filter field).
+    - If the query is a fund name, nickname, or general search that does not clearly and explicitly mention filterable criteria, return None for all fields.
+    - Only process and extract known filter fields described below; ignore all other attributes or details from the query.
+    - Output ALL filter fields (even if None), and include a short reasoning for your output.
 
-    Examples:
-    - "FIP funds" → fund_type=["FIP"], everything else=None
-    - "funds for qualified investors" → target_audience=["QUALIFIED"], everything else=None
-    - "multimercado funds" → investment_class=["Multimercado"], everything else=None
-    - "bradesco gold fund" → everything=None (this is a name/strategy search, not criteria)
+    FILTER FIELDS (return value types and explicit mention triggers):
+    - fund_type (list of strings): Only if the query expressly mentions a fund type such as "FIP", "ETF", etc.
+        - Examples: "FIP funds" → fund_type=["FIP"]
+    - investment_class (list of strings): Only if the investment strategy/class is mentioned, e.g., "multimercado", "renda fixa", "ações".
+        - Examples: "multimercado funds" → investment_class=["Multimercado"]
+    - target_audience (list of strings): Only if the user specifies, e.g., "qualified investors", "general public".
+        - Examples: "funds for qualified investors" → target_audience=["QUALIFIED"]
+    - service_provider_entity (list of strings): Only if a service provider (e.g., bank, administrator) is mentioned AS a filter and not just in a fund name.
+    - fund_of_funds (bool): Only if the query explicitly asks for funds that invest in other funds.
+    - manager_type (list of strings): Only if a manager type (e.g., "bank manager", "independent manager") is stated as a filter.
+    - is_exclusive_fund (bool): Only if exclusivity is mentioned ("exclusive fund").
+    - can_invest_abroad_100_pct (bool): Only if the ability to invest 100% abroad is expressly requested.
+        - Example: "Funds that can invest 100% abroad" → can_invest_abroad_100_pct=True
+    - has_long_term_taxation (bool): Only if the query explicitly asks for long-term taxation.
+
+    ADDITIONAL GUIDANCE:
+    - Do NOT infer filters from keywords within fund/product names or types unless they match the above list and are clearly functioning as a filter.
+        - Example: "bradesco gold fund" → all filters=None (this is a name/strategy search).
+    - List and label every field, even if its value is None.
+
+    OUTPUT FORMAT:
+    - reasoning: State briefly which criteria (if any) were explicitly mentioned and mapped to fields, and confirm that no assumptions or inferences have been made.
+    - For each filter field (as described above): show value or None.
+
+    EXAMPLES:
+    1. Query: "FIP funds"
+       Output:
+       reasoning: "User mentioned 'FIP', which maps explicitly to fund_type. No other criteria explicitly stated."
+       fund_type=["FIP"]
+       investment_class=None
+       target_audience=None
+       ... (other fields as None)
+
+    2. Query: "Funds that can invest 100% abroad"
+       Output:
+       reasoning: "Explicit mention of ability to invest 100% abroad; all other fields not mentioned."
+       fund_type=None
+       investment_class=None
+       target_audience=None
+       can_invest_abroad_100_pct=True
+       ... (other fields as None)
+
+    3. Query: "bradesco value"
+       Output:
+       reasoning: "No explicit filter criteria stated; likely a fund name search."
+       fund_type=None
+       investment_class=None
+       ... (all fields as None)
+
+    STRICTLY AVOID all inference and assumption—extract only what is plainly present, or return None.
     """
 
     query: str = dspy.InputField(desc="User query containing categorical filters")

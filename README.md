@@ -27,6 +27,48 @@ This project relies on large local datasets that are **not included in git** due
 - **[DSPy](https://github.com/stanfordnlp/dspy):** We use DSPy modules and signatures instead of brittle prompt engineering. This allows the agent to self-optimize and learn from examples.
 - **[MLflow](https://mlflow.org/):** Used for **LLM Tracing**. Every step (intent, extraction, search) is logged as a span, allowing full observability into the agent's "thought process".
 
+## System Workflow
+
+```mermaid
+graph TD
+    User[User Query: Fundos imobiliários do Itaú]
+
+    User --> MainAgent[MainAgent<br/>Chat Loop + History]
+
+    MainAgent --> Intent[Intent Classifier<br/>DSPy Signature]
+    Intent -->|find_by_criteria| Extractor[Specialized Extractor<br/>DSPy Signature]
+
+    Extractor -->|investment_class=FII<br/>service_provider=ITAU| Orchestrator[Search Manager<br/>Orchestrator]
+
+    Orchestrator --> FundTool[Fund Search Tool<br/>Metadata Filters]
+    Orchestrator --> PosTool[Position Search Tool<br/>Asset Holdings]
+    Orchestrator --> SemTool[Semantic Search Tool<br/>Strategy/Objective]
+
+    FundTool --> DB[(DuckDB<br/>br_funds.db)]
+    PosTool --> DB
+    SemTool --> Vector[(Vector Store<br/>Embeddings)]
+
+    DB --> Funds[funds table<br/>67k+ funds]
+    DB --> Snapshots[fund_snapshots<br/>Daily PL/Quota]
+    DB --> Positions[positions table<br/>Holdings]
+    DB --> Performance[fund_performance<br/>Returns/Sharpe]
+
+    Funds --> Results[Search Results<br/>CNPJs List]
+    Snapshots --> Results
+    Positions --> Results
+    Performance --> Results
+    Vector --> Results
+
+    Results --> Generator[Response Generator<br/>DSPy Signature]
+    Generator -->|PT/EN Format| Answer[Encontrei 15 fundos FII<br/> do Itaú: <br/>1. ITAÚ FII...<br/>2. ITAÚ CDI MAIS...]
+
+    style Intent fill:#e1f5ff
+    style Extractor fill:#e1f5ff
+    style Generator fill:#e1f5ff
+    style DB fill:#ffe1e1
+    style Vector fill:#ffe1e1
+```
+
 ## Project Structure
 
 ```
@@ -35,13 +77,18 @@ frontier-ai-ps/
 │   ├── agent/
 │   │   ├── fund_search/          # Core Search Agent
 │   │   │   ├── orchestrator.py   # Main coordination logic
-│   │   │   ├── modules/          # DSPy Modules (Intent, Extraction)
-│   │   │   └── tools/            # Specialized Tools
-│   │   └── main_agent.py         # Top-level Agent (Chat & History)
+│   │   │   ├── signatures/       # DSPy Signatures (Intent, Extraction)
+│   │   │   ├── modules/          # DSPy Modules (Classifiers, Extractors, Managers)
+│   │   │   ├── tools/            # Specialized Search Tools
+│   │   │   ├── models/           # Pydantic Models (State, Output, Query)
+│   │   │   ├── utils/            # Utilities (Mappings, Tracing)
+│   │   │   └── tests/            # E2E and Module Tests
+│   │   ├── main_agent.py         # Top-level Agent (Chat & History)
+│   │   └── response/             # Response Generator
 │   ├── infrastructure/
 │   │   ├── database/             # DuckDB adapters & schema
 │   │   └── ingestion/            # Scripts to load CVM data
-│   └── evaluation/               # DSPy Optimizers & Metrics
+│   └── evaluation/               # DSPy Optimizers (GEPA) & Metrics
 ├── docs/                         # Architecture & Design Docs
 └── scripts/                      # Helper scripts (start_mlflow.sh)
 ```
@@ -53,7 +100,7 @@ The `FundSearchTool` delegates to specialized sub-tools for safety and precision
 | Tool                   | Purpose                                          | Source                        |
 | ---------------------- | ------------------------------------------------ | ----------------------------- |
 | **search_funds**       | Metadata filtering (Manager, CNPJ, Type, Status) | `funds` table                 |
-| **search_performance** | Returns, Volatility, Sharpe Ratio                | `fund_performance_indicators` |
+| **search_performance** | Returns fund metrics                             | `fund_performance_indicators` |
 | **search_positions**   | Asset holdings (Stock, Bond, Debenture lookups)  | `positions` table             |
 | **search_snapshots**   | Daily PL, Quota, Captação (Flows)                | `fund_snapshots` table        |
 | **search_semantic**    | Qualitative search (Strategy, Objective, Risk)   | Vector Store (Lâminas)        |
@@ -87,7 +134,11 @@ uv run dspy-agent ask "give me bradesco gold fund"
 
 ## Documentation
 
-- **[Architecture](docs/architecture.md)**
-- **[Agent Workflow](docs/agent_workflow.md)**
-- **[Data Pipeline](docs/data_pipeline.md)**
-- **[MLflow Integration](docs/mlflow-integration.md)**
+- **[Architecture](docs/architecture.md)** - System components and high-level design
+- **[Agent Workflow](docs/agent_workflow.md)** - Query processing flow from intent to response
+- **[Intents and Tools](docs/intents_and_tools.md)** - Intent classification and tool mapping strategy
+- **[Ambiguity Handling](docs/ambiguity_handling.md)** - How ambiguous queries are detected and resolved
+- **[Data Pipeline](docs/data_pipeline.md)** - Database schema and data ingestion process
+- **[MLflow Integration](docs/mlflow_integration.md)** - LLM tracing and observability setup
+- **[Testing](docs/testing.md)** - Test structure, markers, and running tests
+- **[Evaluation](docs/evaluation.md)** - DSPy GEPA optimization results and evaluation methodology

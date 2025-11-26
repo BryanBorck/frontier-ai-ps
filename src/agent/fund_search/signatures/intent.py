@@ -5,62 +5,80 @@ import dspy
 
 class IntentClassificationSignature(dspy.Signature):
     """
-    Classify the given query to determine which search tools to use for retrieving fund information. The task involves discerning user intent accurately using domain-specific knowledge about financial funds and search tools. Below are the detailed instructions and mappings for this task, ensuring that user queries are interpreted precisely to direct the query to the appropriate search tool.
+    You are tasked with interpreting user queries related to investment funds and mapping each query to the correct fund search intent from a predefined set, using both domain-specific financial knowledge and domain-specific tool mapping rules. Your goal is to determine what information the user is actually seeking (even if their language is ambiguous or imprecise), and select the correct tool(s) to retrieve relevant fund information. You must provide outputs in a specific, structured format and with explicit reasoning.
 
-    ### TOOL MAPPING:
-    - **find_by_name** → Use SemanticSearchTool for queries that explicitly reference a specific fund name. This requires identifying genuinely existing fund names.
-    - **find_by_strategy** → Use SemanticSearchTool to interpret queries that imply a particular theme, sector, or investment concept, even if not explicitly stated.
-    - **find_by_criteria** → Use FundSearchTool for queries that explicitly mention structured database filters or fund types.
-    - **find_by_exposure** → Use PositionSearchTool to find funds based on their asset holdings exposure.
-    - **has_numeric_filter** → Use SnapshotSearchTool or PerformanceSearchTool if the query involves numeric filters.
+    ## Task Input & Output Format
 
-    ### INTERPRET USER INTENT:
-    - Analyze the query to deduce the actual information the user is seeking.
-    - Use domain-specific knowledge about funds and investment sectors; if a fund name doesn't appear to exist, consider the investment theme instead.
+    **Inputs:**
+    - query: A single user query about funds, which may be in English or Portuguese.
+    - history: [Optional] List of previous queries and/or context. (Can be empty.)
 
-    #### EXAMPLES:
-    - "bradesco gold fund" implies the user wants a Bradesco fund tracking gold prices, not a non-existent fund named "Bradesco Gold".
-    - "itau tech fund" implies interest in an Itau fund focused on the tech sector, even if "Itau Tech" is not a literal fund name.
-    - "multimarket low risk" implies the user is interested in a multimarket fund assessed qualitatively as low risk.
+    **Outputs:**
+    A dictionary/object with the following fields:
+    - reasoning: Concise explanation of your interpretation of the query and your mapping choice.
+    - intents: List of the selected tool-intent(s), chosen from the allowed set:
+        - find_by_name
+        - find_by_strategy
+        - find_by_criteria
+        - find_by_exposure
+        - has_numeric_filter
+        - general_browse
+    - search_query: A rephrased (possibly translated) version of the user's query reflecting the intent. If the query refers to a category or theme, use the standard fund filter or strategy label.
+    - required_name_terms: For 'find_by_name', include a list of important fund name terms. For other intents, this can be None.
+    - is_potentially_ambiguous: Boolean. True if you believe the query's intent could reasonably be interpreted in more than one way.
+    - interpretation_note: Only if ambiguity is present, specify briefly what different interpretations are possible; otherwise, None.
+    - context_status: 'reset' unless you are following up on context.
+    - language: Language to use for the search query ('en' or 'pt').
 
-    #### MANAGER VS NAME AMBIGUITY:
-    - "XP Dividendos" -> This is likely a fund name ("XP Dividendos FIA"). Use **find_by_name**.
-    - "Verde Macro" -> This is likely a specific fund ("Verde AM Scena Macro"). Use **find_by_name**.
-    - "Kapitalo Systematic" -> Often a specific fund name/strategy combo. Prefer **find_by_name** if it sounds like a product.
-    - "Verde funds" -> Manager query. Use **find_by_criteria**.
-    - "Opportunity funds" -> Manager query. Use **find_by_criteria**.
-    - **Rule of Thumb**: If query is "Manager + Strategy/Type" (e.g. "Verde funds", "Kinea Real Estate"), use CRITERIA/STRATEGY. If query sounds like a specific product title (e.g. "Verde Scena", "Kapitalo Kappa"), use NAME.
+    ## Core Mapping & Reasoning Instructions
 
-    #### IDENTIFIER FOR FIND_BY_NAME:
-    - Use when queries have specific existing fund names such as "Verde Scena", "Alaska Black", etc.
+    1. **Fund Name vs Manager+Theme vs Category:**
+       - 'find_by_name': Use for queries that refer to a single, distinct, genuinely existing fund product (e.g., "Alaska Black", "Verde Scena", "XP Dividendos FIA", or where the phrasing is 'Manager + Product Title' and it matches a known fund name).
+       - 'find_by_criteria': Use when the user refers to a manager, a standard asset class (fixed income, equity, multimarket), fund type, audience (retail, professional, qualified investors), or other explicit filter (tax status, minimum investment, product audience, etc.).
+       - 'find_by_strategy': Use for queries describing an investment strategy or theme, whether explicit ("long bias", "macro", "multiestratégia", "setor de tecnologia") or implied by combining a manager/institution with a theme ("Itau tech fund" = Itau fund with technology-sector strategy).
+       - 'find_by_exposure': Use for queries about a fund’s holdings or asset exposure ("funds holding PETR4", "exposure to AAPL34", "funds with Petrobras in portfolio").
+       - 'has_numeric_filter': Use when a numeric filter or comparative is stated ("Top 5", "maior retorno", "menor taxa", "AUM > 1B", "cheaper", "most popular").
+       - 'general_browse': Use only for requests for more results, follow-ups ("show more", "do you have more?"), or vague conversation openers ("hi", "what do you recommend?").
 
-    ### EXPLICIT FILTERS (find_by_criteria):
-    - "FIP funds", "funds for qualified investors", "multimercado funds" indicate using **find_by_criteria**.
-    - Standard Asset Classes: "Fixed Income" (Renda Fixa), "Equities" (Ações), "Multimarket" (Multimercado) are **find_by_criteria** (they are strict filters).
-    - Managers: "Bradesco funds", "Now Itau", "E da Bradesco?" are **find_by_criteria** (Manager filter).
-    - Audiences: "For retail", "Qualified investors", "Professional" are **find_by_criteria**.
-    - Tax/Benefits: "Long term tax", "Tax free" are **find_by_criteria**.
-    - **HARD RULE**: If it's a standard category (Class, Type, Manager, Audience), use **find_by_criteria**, NOT strategy.
+    2. **Ambiguity Handling:**
+       - Mark is_potentially_ambiguous as True ONLY if a financial domain expert would find the query plausibly matches multiple distinct search intents. If a query can clearly be mapped (using your knowledge), do not mark as ambiguous.
+       - Provide a brief interpretation_note ONLY if ambiguity is present.
 
-    ### COMPARATIVE & NUMERIC (has_numeric_filter):
-    - specific numbers: "Top 5", "AUM > 1B".
-    - comparative adjectives: "Cheaper" (min fee), "Better performing" (max return), "Larger" (max AUM), "Most popular" (max investors), "Os menores" (min size).
-    - These imply sorting/filtering by a metric → **has_numeric_filter**.
+    3. **Search Query Field (search_query):**
+       - Restate or translate the user’s query to maximize retrieval accuracy. For category queries, use standard fund attributes in the target market language ("fundos multimercado", "fundos de ações", etc.).
+       - For thematic or strategy queries, restate in terms of the relevant investment strategy/controller.
+       - For 'find_by_name', use the canonical fund name.
+       - For 'find_by_criteria', use standard category/manager wording.
+       - If needed, translate the search query to Portuguese for Brazil-domiciled funds.
 
-    ### EXPOSURE (find_by_exposure):
-    - Tickers: "PETR4", "VALE3", "AAPL34".
-    - "Exposure to X", "holding Y".
+    4. **Required Name Terms:**
+       - For 'find_by_name', identify core unique name components (e.g., ["Alaska", "Black"]).
+       - Otherwise, set to None.
 
-    ### PAGINATION / CONTINUATION (general_browse):
-    - "do you have more?" implies **general_browse**.
-    - "show me 10 more" suggests combining **general_browse** with **has_numeric_filter**.
-    - "What do you recommend?", "Details please", "What else?" -> **general_browse** (Request for results/action).
-    - Conversational queries ("Hi", "Hello") should be mapped to **general_browse** or ignored.
+    5. **Special Domain Guidance:**
+       - If the query combines "manager + funds" (e.g., "Verde funds", "Safra retail funds", "Opportunity funds"), this is a criteria filter: use 'find_by_criteria'.
+       - For "manager + strategy/theme" ("Bradesco gold fund", "Itau tech fund"), treat as thematic/strategy: use 'find_by_strategy' unless such a fund name actually exists.
+       - If unsure if something is a product name or strategy, prefer 'find_by_name' ONLY if it closely matches a real fund name in Brazil; otherwise, map based on intent/theme.
+       - Direct queries for class/type/target audience/tax to 'find_by_criteria' (never to strategy).
 
-    ### CLARIFICATION:
-    - Only seek clarification when the query is genuinely ambiguous with multiple equally valid interpretations. This is typically not required for straightforward "manager + theme" queries.
+    6. **Language and Terminology:**
+       - Ensure the 'search_query' reflects the fund industry standard language used in Brazil where appropriate (e.g., 'fundos de multimercado', 'para investidores qualificados').
 
-    Use your expertise to interpret the user's intent beyond literal keyword matching and ensure the query maps to the most appropriate tool to retrieve relevant fund information.
+    ## Examples (Based on Domain Rules):
+
+    - Query: "spx long bias"
+      - 'find_by_strategy' (Not 'find_by_name'; focus is on the long bias strategy, even if a fund called "SPX Long Bias" exists but is less plausible.)
+    - Query: "selection fund"
+      - Map as 'find_by_criteria' only if there is an established 'selection' category; otherwise, flag as ambiguous.
+    - Query: "Safra retail funds"
+      - 'find_by_criteria'; manager = Safra, audience = retail investors.
+
+    ## Miscellaneous
+    - Do not overuse ambiguity; use it sparingly when interpretations genuinely conflict.
+    - Maintain conciseness and professional, domain-appropriate terminology throughout.
+    - Always fill all required fields even if the value is None.
+
+    Follow these instructions precisely to interpret intent and produce the output fields with correct domain mapping.
     """
 
     query: str = dspy.InputField(desc="User's natural language query about funds")
