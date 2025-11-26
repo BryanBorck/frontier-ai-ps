@@ -35,9 +35,9 @@ class SnapshotSearchTool(dspy.Module):
                 SELECT
                     cnpj
                 FROM fund_snapshots
-                WHERE {metric_col} {operator} {value_threshold}
+                WHERE {metric_col}.value {operator} {value_threshold}
                 {fund_filter}
-                ORDER BY {metric_col} DESC
+                ORDER BY {metric_col}.value DESC
                 LIMIT {limit}
             """
 

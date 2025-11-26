@@ -1,15 +1,16 @@
 import dspy
 
 from src.agent.fund_details.tool import FundDetailsTool
-from src.agent.fund_search.agent import FundSearchAgent
 from src.agent.fund_search.models.output import SearchOutput
+from src.agent.fund_search.modules.intent import IntentClassifier
+from src.agent.fund_search.orchestrator import FundSearchTool
 from src.agent.response.generator import ResponseGenerator
 
 
 class MainAgent:
     """
     Main Agent Orchestrator.
-    Combines FundSearchAgent (Discovery) and FundDetailsTool (Retrieval).
+    Combines FundSearchTool (Discovery) and FundDetailsTool (Retrieval).
     """
 
     def __init__(
@@ -21,11 +22,11 @@ class MainAgent:
         dspy.configure(lm=self.lm)
 
         # Components
-        # MainAgent doesn't need to know about tracing config for FundSearchAgent anymore if we rely on defaults
+        # MainAgent doesn't need to know about tracing config for FundSearchTool anymore if we rely on defaults
         # or if we want to pass specific config, we do it here.
         # User requested to remove tracing from MainAgent.
 
-        self.search_agent = FundSearchAgent(
+        self.search_tool = FundSearchTool(
             api_key=api_key,
             model=model,
             enable_mlflow=True,  # Enable tracing for fund search only
@@ -33,6 +34,9 @@ class MainAgent:
 
         self.details_tool = FundDetailsTool()
         self.response_generator = ResponseGenerator()
+
+        # Classifier for MainAgent to decide flow
+        self.intent_classifier = IntentClassifier()
 
         # State
         self.history = []
@@ -44,13 +48,41 @@ class MainAgent:
     def reset_history(self):
         """Reset conversation history."""
         self.history = []
-        self.search_agent.clear_state()
+        self.search_tool.clear_state()
 
     def chat(self, question: str) -> str:
         """Main entry point."""
 
+        # 0. Pre-Classification (Main Agent Level)
+        # Check if it's purely informational or needs search
+        history_str = ""
+        for turn in self.history[-3:]:
+            history_str += f"User: {turn.get('question', '')}\n"
+            history_str += f"Agent: {turn.get('answer', '')}\n"
+
+        intent_pred = self.intent_classifier(query=question, history=history_str)
+        intents = intent_pred.intents
+        detected_language = intent_pred.language or "pt"
+
+        # Handle Informational directly
+        if "informational" in intents:
+            answer = self._generate_response(
+                question=question,
+                results=[],
+                response_type="informational",
+                interpretation_note=intent_pred.interpretation_note,
+                suggested_followup=None,
+                suggestions=[],
+                user_language=detected_language,
+            )
+            self.history.append({"question": question, "answer": answer})
+            # Also update search tool history so it knows we chatted
+            self.search_tool.update_history(question, answer)
+            return answer
+
         # 1. Fund Search (Agentic Step)
-        search_output: SearchOutput = self.search_agent.ask(question)
+        # Pass the already computed intent to avoid double cost/latency
+        search_output: SearchOutput = self.search_tool.ask(question, intent_prediction=intent_pred)
 
         # 2. Process Output
         cnpjs = search_output.cnpjs
@@ -100,8 +132,8 @@ class MainAgent:
         # Save history
         self.history.append({"question": question, "answer": answer})
 
-        # Update Search Agent's history for context awareness
-        self.search_agent.update_history(question, answer)
+        # Update Search Tool's history for context awareness
+        self.search_tool.update_history(question, answer)
 
         return answer
 

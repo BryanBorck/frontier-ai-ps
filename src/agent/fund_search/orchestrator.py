@@ -12,10 +12,10 @@ from src.agent.fund_search.modules.search_manager.manager import SearchManager
 from src.agent.fund_search.utils.tracing import TracingManager
 
 
-class FundSearchAgent:
+class FundSearchTool:
     """
-    Agent for searching funds and returning CNPJs.
-    Replaces FundSearchOrchestrator but focuses on discovery only.
+    Tool for searching funds and returning CNPJs.
+    Wraps the agentic workflow for fund discovery.
     """
 
     def __init__(
@@ -54,25 +54,36 @@ class FundSearchAgent:
         self.state = ConversationState()
 
     def ask(
-        self, question: str, context_cnpjs: list[str] | None = None, use_history: bool = True
+        self,
+        question: str,
+        context_cnpjs: list[str] | None = None,
+        use_history: bool = True,
+        intent_prediction: dspy.Prediction | None = None,
     ) -> SearchOutput:
         """Main entry point for processing a user query."""
         with self.tracer.chain(
-            "FundSearchAgent",
+            "FundSearchTool",
             inputs={
                 "question": question,
                 "context_cnpjs_count": len(context_cnpjs) if context_cnpjs else 0,
             },
         ) as root_span:
             root_span.set_attribute("turn", self.state.turn + 1)
-            output = self._process_query(question, context_cnpjs, use_history)
+            output = self._process_query(question, context_cnpjs, use_history, intent_prediction)
             root_span.set_outputs(
-                {"cnpjs_count": len(output.cnpjs), "response_type": output.response_type}
+                {
+                    "cnpjs_count": len(output.cnpjs),
+                    "response_type": output.response_type,
+                }
             )
             return output
 
     def _process_query(
-        self, question: str, context_cnpjs: list[str] | None, use_history: bool
+        self,
+        question: str,
+        context_cnpjs: list[str] | None,
+        use_history: bool,
+        intent_prediction: dspy.Prediction | None = None,
     ) -> SearchOutput:
         """Internal implementation of query processing."""
         if not use_history:
@@ -89,28 +100,39 @@ class FundSearchAgent:
         self.state.turn += 1
 
         # --- PHASE 1: INTENT CLASSIFICATION ---
-        with self.tracer.llm_call("IntentClassification", {"query": question}) as span:
-            # Pass history to classifier
-            intent_pred = self.intent_classifier(query=question, history=history_str)
+        if intent_prediction:
+            intent_pred = intent_prediction
+            # Extract fields (assuming structure matches)
             intents = intent_pred.intents
             detected_language = intent_pred.language or "pt"
             search_query = intent_pred.search_query
             required_name_terms = intent_pred.required_name_terms
             is_ambiguous = intent_pred.is_potentially_ambiguous
             interpretation_note = intent_pred.interpretation_note
-            context_status = getattr(
-                intent_pred, "context_status", "keep"
-            )  # Default to keep if not present
+            context_status = getattr(intent_pred, "context_status", "keep")
+        else:
+            with self.tracer.llm_call("IntentClassification", {"query": question}) as span:
+                # Pass history to classifier
+                intent_pred = self.intent_classifier(query=question, history=history_str)
+                intents = intent_pred.intents
+                detected_language = intent_pred.language or "pt"
+                search_query = intent_pred.search_query
+                required_name_terms = intent_pred.required_name_terms
+                is_ambiguous = intent_pred.is_potentially_ambiguous
+                interpretation_note = intent_pred.interpretation_note
+                context_status = getattr(
+                    intent_pred, "context_status", "keep"
+                )  # Default to keep if not present
 
-            span.set_outputs(
-                {
-                    "intents": intents,
-                    "language": detected_language,
-                    "search_query": search_query,
-                    "is_ambiguous": is_ambiguous,
-                    "context_status": context_status,
-                }
-            )
+                span.set_outputs(
+                    {
+                        "intents": intents,
+                        "language": detected_language,
+                        "search_query": search_query,
+                        "is_ambiguous": is_ambiguous,
+                        "context_status": context_status,
+                    }
+                )
 
         # --- PHASE 2: EXTRACTION ---
         with self.tracer.llm_call(
@@ -176,10 +198,12 @@ class FundSearchAgent:
             )
 
         # --- Special Path: Informational Intent ---
+        # "informational" should be handled by MainAgent before calling this tool.
+        # But as a fallback, if we receive it (e.g. standalone usage without pre-check), we return empty.
         if "informational" in intents:
             return SearchOutput(
                 cnpjs=[],
-                response_type="informational",
+                response_type="no_results",  # Force fallback or "no results"
                 interpretation_note=interpretation_note,
                 detected_language=detected_language,
                 is_ambiguous=is_ambiguous,

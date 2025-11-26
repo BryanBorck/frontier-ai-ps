@@ -41,7 +41,8 @@ class ResponseSignature(dspy.Signature):
         desc="""Target language for the response.
         - 'en': Respond in English.
         - 'pt': Respond in Portuguese.
-        Use this field to determine the output language regardless of the query content language."""
+        CRITICAL: IGNORE the language of the 'query' or 'results_summary'. 
+        You MUST output the 'answer' in the language specified here."""
     )
 
     answer: str = dspy.OutputField(
