@@ -23,6 +23,14 @@ class IntentClassificationSignature(dspy.Signature):
     - "itau tech fund" implies interest in an Itau fund focused on the tech sector, even if "Itau Tech" is not a literal fund name.
     - "multimarket low risk" implies the user is interested in a multimarket fund assessed qualitatively as low risk.
 
+    #### MANAGER VS NAME AMBIGUITY:
+    - "XP Dividendos" -> This is likely a fund name ("XP Dividendos FIA"). Use **find_by_name**.
+    - "Verde Macro" -> This is likely a specific fund ("Verde AM Scena Macro"). Use **find_by_name**.
+    - "Kapitalo Systematic" -> Often a specific fund name/strategy combo. Prefer **find_by_name** if it sounds like a product.
+    - "Verde funds" -> Manager query. Use **find_by_criteria**.
+    - "Opportunity funds" -> Manager query. Use **find_by_criteria**.
+    - **Rule of Thumb**: If query is "Manager + Strategy/Type" (e.g. "Verde funds", "Kinea Real Estate"), use CRITERIA/STRATEGY. If query sounds like a specific product title (e.g. "Verde Scena", "Kapitalo Kappa"), use NAME.
+
     #### IDENTIFIER FOR FIND_BY_NAME:
     - Use when queries have specific existing fund names such as "Verde Scena", "Alaska Black", etc.
 
@@ -47,7 +55,7 @@ class IntentClassificationSignature(dspy.Signature):
     - "do you have more?" implies **general_browse**.
     - "show me 10 more" suggests combining **general_browse** with **has_numeric_filter**.
     - "What do you recommend?", "Details please", "What else?" -> **general_browse** (Request for results/action).
-    - Conversational queries ("Hi", "Hello") should be mapped to **general_browse** or ignored, but NOT informational.
+    - Conversational queries ("Hi", "Hello") should be mapped to **general_browse** or ignored.
 
     ### CLARIFICATION:
     - Only seek clarification when the query is genuinely ambiguous with multiple equally valid interpretations. This is typically not required for straightforward "manager + theme" queries.

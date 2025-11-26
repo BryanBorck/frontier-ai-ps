@@ -73,8 +73,9 @@ class SpecializedExtractor(dspy.Module):
         # 3. Exposure: find_by_exposure
         if "find_by_exposure" in intents:
             exposure_result = self.extract_exposure(query=query)
-            parsed.asset_name = exposure_result.asset_name
-            parsed.asset_tickers = exposure_result.asset_tickers
+            # Map old field names to new simplified model
+            parsed.companies = exposure_result.asset_name  # asset_name → companies
+            # Note: asset_tickers removed - we only use company names now
             parsed.asset_type = exposure_result.asset_type
 
         # 4. Numeric Filter: has_numeric_filter

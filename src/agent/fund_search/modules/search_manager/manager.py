@@ -117,8 +117,7 @@ class SearchRouter:
         # --- STEP 3: Exposure Search ---
         if "find_by_exposure" in intents:
             position_criteria = PositionSearchCriteria(
-                asset_name=parsed.asset_name,
-                asset_tickers=parsed.asset_tickers,
+                companies=parsed.companies,  # Simplified: only company names
                 asset_type=parsed.asset_type,
             )
             
@@ -168,12 +167,12 @@ class SearchRouter:
 
     def _normalize_query(self, parsed: ParsedQuery) -> None:
         """Normalize query entities."""
-        if parsed.asset_name:
-            normalized_assets = []
-            for raw_name in parsed.asset_name:
+        if parsed.companies:
+            normalized_companies = []
+            for raw_name in parsed.companies:
                 norm_result = self.normalizer(query_text=raw_name, entity_type="ASSET")
-                normalized_assets.append(norm_result.normalized_name or raw_name)
-            parsed.asset_name = normalized_assets
+                normalized_companies.append(norm_result.normalized_name or raw_name)
+            parsed.companies = normalized_companies
 
         if parsed.service_provider_entity:
             normalized_providers = []

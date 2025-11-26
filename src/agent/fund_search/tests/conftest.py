@@ -212,6 +212,5 @@ def sample_user_queries():
         "find_by_criteria": "Fundos de ações para investidores qualificados",
         "find_by_exposure": "Fundos que investem em Petrobras",
         "numeric_filter": "Fundos com AUM acima de 100 milhões",
-        "informational": "O que é um FII?",
         "followup": "Quero ver apenas os de renda fixa",
     }

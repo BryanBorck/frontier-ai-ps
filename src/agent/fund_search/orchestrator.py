@@ -190,18 +190,6 @@ class FundSearchTool:
                 is_ambiguous=is_ambiguous,
             )
 
-        # --- Special Path: Informational Intent ---
-        # "informational" should be handled by MainAgent before calling this tool.
-        # But as a fallback, if we receive it (e.g. standalone usage without pre-check), we return empty.
-        if "informational" in intents:
-            return SearchOutput(
-                cnpjs=[],
-                response_type="no_results",  # Force fallback or "no results"
-                interpretation_note=interpretation_note,
-                detected_language=detected_language,
-                is_ambiguous=is_ambiguous,
-            )
-
         # --- PHASE 4: SEARCH EXECUTION ---
         with self.tracer.chain("SearchExecution", {"parsed_query": parsed_query.to_dict()}) as span:
             search_pred = self.search_manager(parsed_query, context_cnpjs=active_context)

@@ -29,12 +29,8 @@ class ConversationManager(dspy.Module):
         Returns: (should_ask, question_text, suggested_options)
         """
 
-        # RULE 0: Informational/Explain Intent -> NEVER ask follow-up, just answer
-        if "informational" in parsed.intents:
-            return (False, "", [])
-
         # RULE 1: Empty Query -> Always ask
-        # Only if it's not a semantic query or informational
+        # Only if it's not a semantic query
         if parsed.is_empty() and state.turn == 0 and not parsed.semantic_query:
             return self._generate_initial_followup(parsed)
 

@@ -17,7 +17,7 @@ def mock_dspy_predict():
 def sample_intent_response():
     """Sample intent classification response."""
     mock = Mock()
-    mock.intent = "find_by_criteria"
+    mock.intents = ["find_by_criteria"]
     mock.confidence = 0.95
     mock.reasoning = "User is searching for funds by investment criteria"
     return mock
@@ -45,6 +45,5 @@ def sample_queries():
         "find_by_criteria": "Fundos de ações para investidores qualificados",
         "find_by_exposure": "Fundos que investem em Petrobras",
         "numeric_filter": "Fundos com AUM acima de 100 milhões",
-        "informational": "O que é um FII?",
         "followup": "Quero ver apenas os de renda fixa"
     }

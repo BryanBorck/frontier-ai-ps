@@ -17,8 +17,10 @@ def analyze_errors():
 
     # 2. Get Data
     # We'll check the validation set to see the remaining errors
-    _, val_set = get_intent_examples()
-    print(f"Analyzing {len(val_set)} validation examples...\n")
+    train_set, val_set = get_intent_examples(
+        train_ratio=0.5
+    )  # Use 50/50 split to see more validation examples
+    print(f"Analyzing {len(val_set)} validation examples (using 50/50 split)...\n")
 
     # 3. Run Module
     module = IntentClassifier()
