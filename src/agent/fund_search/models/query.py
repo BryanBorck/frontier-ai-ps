@@ -101,10 +101,16 @@ class FundSearchCriteria(BaseModel):
 class PositionSearchCriteria(BaseModel):
     """
     Criteria for asset exposure search.
+
+    Design Philosophy:
+    - PRIMARY: Search by asset_type (broad) - "funds investing in equities"
+    - OPTIONAL: Refine by companies (narrow) - "funds investing in Petrobras equity"
+
+    Examples:
+    - Broad: asset_type=["EQUITY"] → All equity funds
+    - Narrow: asset_type=["EQUITY"], companies=["Petrobras"] → Petrobras equity funds
     """
 
-    asset_name: list[str] | None = None
-    asset_tickers: list[str] | None = None
     asset_type: (
         list[
             Literal[
@@ -116,7 +122,22 @@ class PositionSearchCriteria(BaseModel):
             ]
         ]
         | None
-    ) = None
+    ) = Field(
+        None,
+        description=(
+            "PRIMARY FILTER: Asset classes to search for fund exposure. "
+            "Examples: ['EQUITY'] for stocks, ['FIXED_INCOME'] for bonds, "
+            "['DERIVATIVES'] for options/futures. Can combine: ['EQUITY', 'DERIVATIVES']"
+        ),
+    )
+
+    companies: list[str] | None = Field(
+        None,
+        description=(
+            "OPTIONAL REFINEMENT: Company names to filter assets (e.g., ['Petrobras', 'Vale']). "
+            "Searches issuer names with partial matching. Use for deeper filtering only."
+        ),
+    )
 
 
 class ParsedQuery(BaseModel):
@@ -148,8 +169,7 @@ class ParsedQuery(BaseModel):
     has_long_term_taxation: bool | None = None
 
     # From ExtractExposure
-    asset_name: list[str] | None = None
-    asset_tickers: list[str] | None = None
+    companies: list[str] | None = None  # Simplified: company names or tickers
     asset_type: list[str] | None = None
 
     # From ExtractNumeric
@@ -172,8 +192,7 @@ class ParsedQuery(BaseModel):
                 self.fund_name,
                 self.fund_type,
                 self.investment_class,
-                self.asset_name,
-                self.asset_tickers,
+                self.companies,
                 self.numeric_filter,
                 self.semantic_query,
                 self.service_provider_entity,

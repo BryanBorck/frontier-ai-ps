@@ -2,8 +2,6 @@ import dspy
 import duckdb
 from sentence_transformers import SentenceTransformer
 
-from src.agent.fund_search.models.fund import FundResult
-
 # Global model cache to avoid reloading
 _MODEL_CACHE = None
 MODEL_NAME = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
@@ -38,21 +36,26 @@ class SemanticSearchTool(dspy.Module):
         Returns list of CNPJs sorted by relevance.
         """
         try:
-            # Clean query: remove quotes and extra whitespace
+            # Clean query: remove quotes and extra whitespace (prevents SQL injection)
             clean_query = query.replace('"', "").replace("'", "").strip()
 
             model = _get_model()
             conn = duckdb.connect(self.vector_store_path, read_only=True)
 
-            # 1. Generate Query Variations based on search_mode
+            # 1. MULTI-QUERY FUSION: Generate multiple query variations to improve recall
+            # WHY: Different query formulations match different parts of fund descriptions
+            # e.g., "small cap" matches better when prefixed with "Strategy Description:"
             if search_mode == "name":
+                # Focus on fund names only
                 queries = [clean_query, f"Fund Name: {clean_query}"]
             elif search_mode == "strategy":
+                # Focus on investment strategy/objective text
                 queries = [
                     f"Strategy Description: {clean_query}",
                     f"Objective: {clean_query}",
                 ]
             else:
+                # Comprehensive search across all fields
                 queries = [
                     clean_query,
                     f"Fund Name: {clean_query}",
@@ -60,14 +63,17 @@ class SemanticSearchTool(dspy.Module):
                     f"Objective: {clean_query}",
                 ]
 
-            # Encode all variations
+            # Encode all variations into embeddings
             query_vectors = model.encode(queries, convert_to_numpy=True)
 
-            # 2. Run searches using DuckDB's native cosine similarity
-            fetch_limit = top_k * 20
+            # 2. VECTOR SEARCH: Run searches using DuckDB's native cosine similarity
+            # WHY: Each query variation retrieves top matches, then we take the max score per fund
+            fetch_limit = top_k * 20  # Over-fetch to ensure diversity after deduplication
             all_results: dict[str, dict] = {}
 
-            # Construct SQL with filters
+            # 3. PRE-FILTERING: Apply SQL filters BEFORE vector search for efficiency
+            # WHY: Reduces search space and improves performance by filtering at database level
+            # Example: Filter to only "Renda Fixa" funds before computing semantic similarity
             where_clauses = []
             if pre_filter:
                 if "manager" in pre_filter and pre_filter["manager"]:
@@ -80,12 +86,11 @@ class SemanticSearchTool(dspy.Module):
 
                 if "fund_type" in pre_filter and pre_filter["fund_type"]:
                     # Filter text_content for "Type: ... <type>"
-                    # We search for the type in text content
                     where_clauses.append("text_content ILIKE ?")
 
                 if "name_terms" in pre_filter and pre_filter["name_terms"]:
+                    # Filter by required terms in legal_name or text_content (AND logic)
                     for _ in pre_filter["name_terms"]:
-                        # Filter by required terms in legal_name or text_content
                         where_clauses.append(
                             "(metadata['legal_name'] ILIKE ? OR text_content ILIKE ?)"
                         )
@@ -145,26 +150,52 @@ class SemanticSearchTool(dspy.Module):
 
             conn.close()
 
-            # 3. Keyword Boost (Hybrid Search)
+            # 4. KEYWORD BOOSTING: Hybrid search combining semantic + exact matches
+            # WHY: Improves precision when user mentions specific fund names or brands
+            # Example: Query "XP" should rank XP-branded funds higher even if semantic match is weaker
             STOPWORDS = {
-                "fundo", "investimento", "investimentos", "cotas", "classe", "fi", "fif", "fic",
-                "fim", "fia", "multimercado", "renda", "fixa", "acoes", "cambial",
-                "referenciado", "credito", "privado", "financeiro", "banco", "asset", "gestao",
+                # Common Portuguese fund terms that don't add specificity
+                "fundo",
+                "investimento",
+                "investimentos",
+                "cotas",
+                "classe",
+                "fi",
+                "fif",
+                "fic",
+                "fim",
+                "fia",
+                "multimercado",
+                "renda",
+                "fixa",
+                "acoes",
+                "cambial",
+                "referenciado",
+                "credito",
+                "privado",
+                "financeiro",
+                "banco",
+                "asset",
+                "gestao",
             }
 
+            # Extract meaningful keywords from query (remove stopwords)
             search_terms = [
                 w.lower() for w in clean_query.split() if len(w) > 2 and w.lower() not in STOPWORDS
             ]
 
+            # Apply keyword boost: +0.1 per keyword match (max +0.3)
+            # WHY: Balances semantic similarity with exact keyword matches
             final_list = []
             for _cnpj, data in all_results.items():
                 name_lower = (data["legal_name"] or "").lower()
                 matches = sum(1 for term in search_terms if term in name_lower)
                 if matches > 0:
+                    # Boost score by 0.1 per match, capped at 0.3 to avoid overpowering semantic score
                     data["score"] += min(matches * 0.1, 0.3)
                 final_list.append(data)
 
-            # 4. Sort and limit
+            # 5. RANKING: Sort by final score and return top K
             final_list.sort(key=lambda x: x["score"], reverse=True)
             top_results = final_list[:top_k]
 
@@ -173,17 +204,3 @@ class SemanticSearchTool(dspy.Module):
         except Exception as e:
             print(f"Error in semantic search: {e}")
             return []
-
-    def get_by_ids(self, fund_ids: list[str]) -> list[FundResult]:
-        """
-        Deprecated or Refactored? 
-        The semantic tool shouldn't really be used for ID lookup if we have the details tool.
-        But maybe we still need it for resolving text content?
-        
-        The user wants separate detail tool. 
-        I'll leave this here for now but it might not be used.
-        """
-        # ... implementation omitted/kept as is if needed, but the new architecture relies on CNPJs ...
-        # If the user iterates on CNPJs, we don't need get_by_ids (which was UUID based).
-        # I'll modify it to get_by_cnpjs if needed, or remove.
-        return []

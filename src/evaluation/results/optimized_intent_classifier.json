@@ -1,0 +1,60 @@
+{
+  "classify.predict": {
+    "traces": [],
+    "train": [],
+    "demos": [],
+    "signature": {
+      "instructions": "Classify the given query to determine which search tools to use for retrieving fund information. The task involves discerning user intent accurately using domain-specific knowledge about financial funds and search tools. Below are the detailed instructions and mappings for this task, ensuring that user queries are interpreted precisely to direct the query to the appropriate search tool.\n\n### TOOL MAPPING:\n- **find_by_name** → Use SemanticSearchTool for queries that explicitly reference a specific fund name. This requires identifying genuinely existing fund names.\n- **find_by_strategy** → Use SemanticSearchTool to interpret queries that imply a particular theme, sector, or investment concept, even if not explicitly stated.\n- **find_by_criteria** → Use FundSearchTool for queries that explicitly mention structured database filters or fund types.\n- **find_by_exposure** → Use PositionSearchTool to find funds based on their asset holdings exposure.\n- **has_numeric_filter** → Use SnapshotSearchTool or PerformanceSearchTool if the query involves numeric filters.\n\n### INTERPRET USER INTENT:\n- Analyze the query to deduce the actual information the user is seeking.\n- Use domain-specific knowledge about funds and investment sectors; if a fund name doesn’t appear to exist, consider the investment theme instead.\n\n#### EXAMPLES:\n- \"bradesco gold fund\" implies the user wants a Bradesco fund tracking gold prices, not a non-existent fund named \"Bradesco Gold\".\n- \"itau tech fund\" implies interest in an Itau fund focused on the tech sector, even if \"Itau Tech\" is not a literal fund name.\n- \"multimarket low risk\" implies the user is interested in a multimarket fund assessed qualitatively as low risk.\n\n#### IDENTIFIER FOR FIND_BY_NAME:\n- Use when queries have specific existing fund names such as \"Verde Scena\", \"Alaska Black\", etc.\n\n### EXPLICIT FILTERS:\n- \"FIP funds\", \"funds for qualified investors\", \"multimercado funds\" indicate using **find_by_criteria**.\n\n### PAGINATION / CONTINUATION:\n- \"do you have more?\" implies **general_browse**; \"show me 10 more\" suggests combining **general_browse** with **has_numeric_filter**.\n\n### CLARIFICATION:\n- Only seek clarification when the query is genuinely ambiguous with multiple equally valid interpretations. This is typically not required for straightforward \"manager + theme\" queries.\n\nUse your expertise to interpret the user's intent beyond literal keyword matching and ensure the query maps to the most appropriate tool to retrieve relevant fund information.",
+      "fields": [
+        {
+          "prefix": "Query:",
+          "description": "User's natural language query about funds"
+        },
+        {
+          "prefix": "History:",
+          "description": "Conversation history (previous questions and answers)"
+        },
+        {
+          "prefix": "Reasoning: Let's think step by step in order to",
+          "description": "${reasoning}"
+        },
+        {
+          "prefix": "Intents:",
+          "description": "List of intents. Use your knowledge to pick the RIGHT one, don't be overly cautious."
+        },
+        {
+          "prefix": "Search Query:",
+          "description": "Optimized Portuguese search query for semantic matching.\n        - Translate English terms to Portuguese contextually.\n        - Create a descriptive phrase that captures the fund's strategy, objective, or name.\n        - Use natural language phrases to improve semantic matching.\n        - NO QUOTES.\n        Examples:\n        - \"bradesco gold fund\" → fundo bradesco investimento em ouro\n        - \"itau tech fund\" → fundo itau setor de tecnologia\n        - \"conservative funds\" → fundos perfil conservador renda fixa\n        - \"verde scena\" → verde scena\n        "
+        },
+        {
+          "prefix": "Required Name Terms:",
+          "description": "List of terms that MUST appear in the fund's name/description.\n        USE SPARINGLY! Only for proper nouns, specific brands, or tickers.\n        - \"bradesco gold\" → [\"bradesco\"] (Ouro is a strategy, let semantic handle it)\n        - \"petrobras funds\" → [\"petrobras\"]\n        - \"tech funds\" → None (leave 'tech' for semantic search)\n        - \"small caps\" → None\n        "
+        },
+        {
+          "prefix": "Is Potentially Ambiguous:",
+          "description": "True if query COULD have multiple interpretations, even if we're confident.\n        Examples of ambiguous queries:\n        - \"bradesco gold\" → Could be fund NAME or fund STRATEGY (tracking gold)\n        - \"itau tech\" → Could be fund NAME or fund STRATEGY (tech sector)\n        Use this to offer follow-up clarification AFTER showing results."
+        },
+        {
+          "prefix": "Interpretation Note:",
+          "description": "Brief note explaining your interpretation when is_potentially_ambiguous=True.\n        Example: \"I interpreted this as a Bradesco fund tracking gold prices (Bradesco Ouro)\"\n        None if query is not ambiguous."
+        },
+        {
+          "prefix": "Context Status:",
+          "description": "How to handle the previous conversation context (filters/results).\n        - 'reset': Topic changed significantly (e.g. from 'Itau' to 'Bradesco', or 'Gold' to 'LatAm'). Discard old filters.\n        - 'keep': Refining current topic (e.g. 'Itau funds' -> 'and only FIF'). Keep old filters and add new ones.\n        - 'refine_result_set': Filtering specifically from the PREVIOUS LIST of results (e.g. 'which of these has highest fee?', 'show me the first one').\n        "
+        },
+        {
+          "prefix": "Language:",
+          "description": "Detected language of the query text itself.\n        - 'en' if the user is speaking English (e.g., \"give me funds\", \"show me gold funds\").\n        - 'pt' if the user is speaking Portuguese (e.g., \"me mostre fundos\", \"fundos de ouro\").\n        "
+        }
+      ]
+    },
+    "lm": null
+  },
+  "metadata": {
+    "dependency_versions": {
+      "python": "3.13",
+      "dspy": "3.0.4",
+      "cloudpickle": "3.1"
+    }
+  }
+}

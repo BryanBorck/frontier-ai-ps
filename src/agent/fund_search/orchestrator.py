@@ -19,7 +19,7 @@ class FundSearchTool:
     def __init__(
         self,
         api_key: str,
-        model: str = "gpt-4.1-mini",
+        model: str = "gpt-4o-mini",
         enable_mlflow: bool = True,
         mlflow_tracking_uri: str | None = None,
         mlflow_experiment_name: str = "FundSearch-Agent",

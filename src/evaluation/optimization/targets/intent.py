@@ -20,7 +20,7 @@ def optimize_intent(auto_level="medium", num_threads=4):
     module = IntentClassifier()
 
     # 3. Define Metric Adapter
-    def intent_metric(gold, pred, trace=None):
+    def intent_metric(gold, pred, trace=None, pred_name=None, pred_trace=None):
         return intent_match_score(pred.intents, gold.expected_intents)
 
     # 4. Run Optimizer
@@ -33,7 +33,11 @@ def optimize_intent(auto_level="medium", num_threads=4):
     )
 
     # 5. Save
-    output_path = "optimized_intent_classifier.json"
+    output_dir = "src/evaluation/results"
+    import os
+
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "optimized_intent_classifier.json")
     optimized_module.save(output_path)
     print(f"\nSaved optimized module to {output_path}")
 

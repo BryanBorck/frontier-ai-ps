@@ -19,7 +19,7 @@ class MainAgent:
     def __init__(
         self,
         api_key: str,
-        model: str = "gpt-4.1-mini",
+        model: str = "gpt-4o-mini",
     ):
         self.lm = dspy.LM(model=f"openai/{model}", api_key=api_key)
         dspy.configure(lm=self.lm)

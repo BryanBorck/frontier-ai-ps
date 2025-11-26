@@ -5,55 +5,54 @@ import dspy
 
 class IntentClassificationSignature(dspy.Signature):
     """
-    Classify the query to determine WHICH SEARCH TOOLS to use.
-    Use your knowledge to interpret what the user ACTUALLY means.
+    Classify the given query to determine which search tools to use for retrieving fund information. The task involves discerning user intent accurately using domain-specific knowledge about financial funds and search tools. Below are the detailed instructions and mappings for this task, ensuring that user queries are interpreted precisely to direct the query to the appropriate search tool.
 
-    TOOL MAPPING:
-    - find_by_name → SemanticSearchTool (fuzzy name matching)
-    - find_by_strategy → SemanticSearchTool (theme/sector/concept)
-    - find_by_criteria → FundSearchTool (structured DB filters ONLY)
-    - find_by_exposure → PositionSearchTool (asset holdings)
-    - has_numeric_filter → SnapshotSearchTool/PerformanceSearchTool
+    ### TOOL MAPPING:
+    - **find_by_name** → Use SemanticSearchTool for queries that explicitly reference a specific fund name. This requires identifying genuinely existing fund names.
+    - **find_by_strategy** → Use SemanticSearchTool to interpret queries that imply a particular theme, sector, or investment concept, even if not explicitly stated.
+    - **find_by_criteria** → Use FundSearchTool for queries that explicitly mention structured database filters or fund types.
+    - **find_by_exposure** → Use PositionSearchTool to find funds based on their asset holdings exposure.
+    - **has_numeric_filter** → Use SnapshotSearchTool or PerformanceSearchTool if the query involves numeric filters.
 
-    USE YOUR KNOWLEDGE TO INTERPRET USER INTENT:
+    ### INTERPRET USER INTENT:
+    - Analyze the query to deduce the actual information the user is seeking.
+    - Use domain-specific knowledge about funds and investment sectors; if a fund name doesn't appear to exist, consider the investment theme instead.
 
-    "bradesco gold fund" → [find_by_strategy]
-      - User wants a Bradesco fund that tracks GOLD prices (like "Bradesco Ouro FIF")
-      - NOT a fund literally named "Bradesco Gold" (that doesn't exist)
-      - Search query: "fundo bradesco investimento em ouro"
+    #### EXAMPLES:
+    - "bradesco gold fund" implies the user wants a Bradesco fund tracking gold prices, not a non-existent fund named "Bradesco Gold".
+    - "itau tech fund" implies interest in an Itau fund focused on the tech sector, even if "Itau Tech" is not a literal fund name.
+    - "multimarket low risk" implies the user is interested in a multimarket fund assessed qualitatively as low risk.
 
-    "itau tech fund" → [find_by_strategy]
-      - User wants an Itau fund focused on TECHNOLOGY sector
-      - NOT a fund literally named "Itau Tech"
-      - Search query: "fundo itau setor de tecnologia"
+    #### IDENTIFIER FOR FIND_BY_NAME:
+    - Use when queries have specific existing fund names such as "Verde Scena", "Alaska Black", etc.
 
-    "verde crypto fund" → [find_by_strategy]
-      - User wants a Verde Asset fund with crypto/blockchain exposure
-      - Search query: "fundo verde cripto criptomoedas blockchain"
+    ### EXPLICIT FILTERS (find_by_criteria):
+    - "FIP funds", "funds for qualified investors", "multimercado funds" indicate using **find_by_criteria**.
+    - Standard Asset Classes: "Fixed Income" (Renda Fixa), "Equities" (Ações), "Multimarket" (Multimercado) are **find_by_criteria** (they are strict filters).
+    - Managers: "Bradesco funds", "Now Itau", "E da Bradesco?" are **find_by_criteria** (Manager filter).
+    - Audiences: "For retail", "Qualified investors", "Professional" are **find_by_criteria**.
+    - Tax/Benefits: "Long term tax", "Tax free" are **find_by_criteria**.
+    - **HARD RULE**: If it's a standard category (Class, Type, Manager, Audience), use **find_by_criteria**, NOT strategy.
 
-    "multimarket low risk" → [find_by_strategy]
-      - "low risk" implies qualitative assessment (semantic).
-      - Search query: "fundos multimercado baixo risco conservador"
+    ### COMPARATIVE & NUMERIC (has_numeric_filter):
+    - specific numbers: "Top 5", "AUM > 1B".
+    - comparative adjectives: "Cheaper" (min fee), "Better performing" (max return), "Larger" (max AUM), "Most popular" (max investors), "Os menores" (min size).
+    - These imply sorting/filtering by a metric → **has_numeric_filter**.
 
-    WHEN TO USE find_by_name (specific fund names):
-    - "Verde Scena" → [find_by_name] (actual fund name)
-    - "Alaska Black" → [find_by_name] (actual fund name)
-    - "SPX Nimitz" → [find_by_name] (actual fund name)
-    - "Dynamo Cougar" → [find_by_name] (actual fund name)
+    ### EXPOSURE (find_by_exposure):
+    - Tickers: "PETR4", "VALE3", "AAPL34".
+    - "Exposure to X", "holding Y".
 
-    WHEN TO USE find_by_criteria (explicit filters):
-    - "FIP funds" → [find_by_criteria] (fund_type filter)
-    - "funds for qualified investors" → [find_by_criteria] (audience filter)
-    - "multimercado funds" → [find_by_criteria] (investment_class filter)
+    ### PAGINATION / CONTINUATION (general_browse):
+    - "do you have more?" implies **general_browse**.
+    - "show me 10 more" suggests combining **general_browse** with **has_numeric_filter**.
+    - "What do you recommend?", "Details please", "What else?" -> **general_browse** (Request for results/action).
+    - Conversational queries ("Hi", "Hello") should be mapped to **general_browse** or ignored, but NOT informational.
 
-    PAGINATION / CONTINUATION:
-    - "do you have more?" → [general_browse] (User wants more results from previous context)
-    - "show me 10 more" → [general_browse, has_numeric_filter]
+    ### CLARIFICATION:
+    - Only seek clarification when the query is genuinely ambiguous with multiple equally valid interpretations. This is typically not required for straightforward "manager + theme" queries.
 
-    CLARIFICATION - Only ask when TRULY ambiguous:
-    - Query is too vague to determine intent
-    - Multiple equally valid interpretations exist
-    - NOT needed for "manager + theme" queries (use your knowledge!)
+    Use your expertise to interpret the user's intent beyond literal keyword matching and ensure the query maps to the most appropriate tool to retrieve relevant fund information.
     """
 
     query: str = dspy.InputField(desc="User's natural language query about funds")
@@ -65,8 +64,7 @@ class IntentClassificationSignature(dspy.Signature):
             "find_by_strategy",  # Theme/sector + optional manager: "bradesco gold", "tech funds", "ESG"
             "find_by_criteria",  # Structured filters: fund_type, investment_class, audience
             "find_by_exposure",  # Asset holdings: "holding Petrobras", "invested in VALE3"
-            "has_numeric_filter",  # Numbers: "AUM > 200M", "top 10"
-            "informational",  # PURELY educational definitions: "What is FIDC?". NOT for "Show me more".
+            "has_numeric_filter",  # Numbers/Sorting: "AUM > 200M", "top 10", "cheapest", "best performing"
             "general_browse",  # Vague or PAGINATION request: "more results", "what else?", "browse funds"
         ]
     ] = dspy.OutputField(

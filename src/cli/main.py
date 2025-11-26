@@ -14,7 +14,7 @@ from src.utils.env import EnvValidationError, validate_env
 # Load environment variables
 load_dotenv()
 
-DEFAULT_MODEL = "gpt-4.1-mini"
+DEFAULT_MODEL = "gpt-4o-mini"
 
 app = typer.Typer(
     name="dspy-agent",
@@ -37,14 +37,6 @@ def ask(
         if not api_key:
             config = validate_env()
             api_key = config.openai_api_key
-
-        # Get MLflow configuration from environment if enabled
-        mlflow_tracking_uri = os.getenv("MLFLOW_TRACKING_URI") if enable_mlflow else None
-        mlflow_experiment_name = (
-            os.getenv("MLFLOW_EXPERIMENT_NAME", "FundSearch-DSPy")
-            if enable_mlflow
-            else "FundSearch-DSPy"
-        )
 
         agent = MainAgent(
             api_key=api_key,
@@ -86,11 +78,6 @@ def chat(
 
         # Get MLflow configuration from environment if enabled
         mlflow_tracking_uri = os.getenv("MLFLOW_TRACKING_URI") if enable_mlflow else None
-        mlflow_experiment_name = (
-            os.getenv("MLFLOW_EXPERIMENT_NAME", "FundSearch-DSPy")
-            if enable_mlflow
-            else "FundSearch-DSPy"
-        )
 
         # Clear MLflow tracking URI if using local file storage
         if enable_mlflow and not mlflow_tracking_uri and "MLFLOW_TRACKING_URI" in os.environ:

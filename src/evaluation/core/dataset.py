@@ -37,10 +37,21 @@ class FundSearchExample:
         return self.expected_extraction
 
 def load_main_dataset() -> List[FundSearchExample]:
-    """Load the main 300-query evaluation dataset."""
-    data_path = Path(settings.DATA_DIR) / "fund_search_evaluation_300.jsonl"
+    """Load the main evaluation dataset (enriched version if available, else standard)."""
+    
+    # Try enriched first
+    enriched_path = Path(settings.DATA_DIR) / "fund_search_evaluation_enriched.jsonl"
+    standard_path = Path(settings.DATA_DIR) / "fund_search_evaluation.jsonl"
+    
+    data_path = enriched_path if enriched_path.exists() else standard_path
+    
     if not data_path.exists():
-        raise FileNotFoundError(f"Main dataset not found at {data_path}")
+        # Fallback to old 300 if exists
+        old_path = Path(settings.DATA_DIR) / "fund_search_evaluation_300.jsonl"
+        if old_path.exists():
+            data_path = old_path
+        else:
+            raise FileNotFoundError(f"Main dataset not found. Checked {enriched_path}, {standard_path}")
         
     examples = []
     with open(data_path) as f:
